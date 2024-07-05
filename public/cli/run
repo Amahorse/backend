@@ -1,0 +1,22 @@
+<?php
+
+//Framework namespace
+namespace Kodelines;
+
+function findRoot():string {
+
+    $split = explode("apps",getcwd());
+
+    return $split[0];
+
+}
+
+define('_CONTEXT_','cli');
+
+//Require autoloader
+require_once findRoot() . 'vendor/autoload.php';
+
+App::getInstance()->build()->dispatch();
+
+die();
+?>

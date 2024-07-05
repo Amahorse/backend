@@ -1,0 +1,33 @@
+{    
+"autoload": {
+        "files": [
+            "./src/shortcuts/app.php",
+            "./src/shortcuts/db.php",
+            "./src/shortcuts/dir.php"
+        ],
+        "psr-4": {
+            "Kodelines\\": "./src/kodelines/Framework/",
+            "Kodelines\\Middleware\\": "./src/kodelines/Kodelines/Middleware/",
+            "Kodelines\\Interfaces\\": "./src/kodelines/Kodelines/Interfaces/",
+            "Kodelines\\Tools\\": "./src/kodelines/Kodelines/Tools/",
+            "Kodelines\\Helpers\\": "./src/kodelines/Kodelines/Helpers/",
+            "Kodelines\\Exception\\": "./src/kodelines/Kodelines/Exception/",
+            "Kodelines\\Libs\\": "./src/kodelines/Kodelines/Libs/",
+            "Kodelines\\Abstract\\": "./src/kodelines/Kodelines/Abstract/",
+            "Kodelines\\Oauth\\": "./src/kodelines/Kodelines/Oauth/",
+            "Elements\\": "./src/kodelines/Elements/",
+            "Context\\": "./src/kodelines/Context/"
+        }
+    },
+    "require": {
+        "slim/slim": "4.*",
+        "slim/psr7": "^1.5",
+        "php-di/php-di": "^6.3",
+        "tuupola/slim-basic-auth": "^3.3",
+        "guzzlehttp/guzzle": "^7.8",
+        "league/csv": "^9.8",
+        "peppeocchi/php-cron-scheduler": "^4.0",
+        "jimtools/jwt-auth": "^1.0",
+                "symfony/yaml": "^6.4"
+    }
+}

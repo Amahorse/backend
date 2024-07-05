@@ -1,0 +1,117 @@
+<IfModule mod_headers.c>
+    Header set Access-Control-Allow-Origin "*"
+    Header set Access-Control-Allow-Headers "*"
+
+    Header set Cache-Control "public,max-age=31536000"
+    <FilesMatch "\.(ico|flv|jpg|jpeg|png|gif|swf|css|js|webp)$">
+    Header unset P3P
+    Header unset Pragma
+    Header set Cache-Control "public,max-age=31536000"
+    </FilesMatch>
+
+</IfModule>
+
+
+# ----------------------------------------------------------------------
+# Expires headers (for better cache control)
+# ----------------------------------------------------------------------
+# These are pretty far-future expires headers.
+# They assume you control versioning with filename-based cache busting
+# Additionally, consider that outdated proxies may miscache
+# futher details: www.stevesouders.com/blog/2008/08/23/revving-filenames-dont-use-querystring/
+# If you don nott use filenames to version, lower the CSS and JS to something like "access plus 1 week".
+# 1 YEAR - does not change often
+
+<IfModule mod_expires.c>
+ExpiresActive on
+#
+# Perhaps better to whitelist expires rules? Perhaps.
+#
+ExpiresDefault "access plus 1 year"
+#
+# cache.appcache needs re-requests in FF 3.6 (thanks Remy ~Introducing HTML5)
+#
+ExpiresByType text/cache-manifest "access plus 0 seconds"
+#
+# Your document html
+#
+ExpiresByType text/html "access plus 0 seconds"
+#
+# Data
+#
+ExpiresByType text/xml "access plus 0 seconds"
+ExpiresByType application/xml "access plus 0 seconds"
+ExpiresByType application/json "access plus 0 seconds"
+#
+# Feed
+#
+ExpiresByType application/rss+xml "access plus 1 hour"
+ExpiresByType application/atom+xml "access plus 1 hour"
+#
+# Favicon (cannot be renamed)
+#
+ExpiresByType image/x-icon "access plus 1 year"
+#
+# Media: images, video, audio
+#
+ExpiresByType image/gif "access plus 1 year"
+ExpiresByType image/png "access plus 1 year"
+ExpiresByType image/jpeg "access plus 1 year"
+ExpiresByType video/ogg "access plus 1 year"
+ExpiresByType audio/ogg "access plus 1 year"
+ExpiresByType video/mp4 "access plus 1 year"
+ExpiresByType video/webm "access plus 1 year"
+#
+# HTC files (css3pie)
+#
+ExpiresByType text/x-component "access plus 1 year"
+#
+</IfModule>
+
+
+<IfModule mod_autoindex.c>
+Options -Indexes
+</IfModule>
+
+#
+## WEBP SUPPORT
+#
+<IfModule mod_mime.c>
+  AddType image/webp .webp
+</IfModule>
+
+RewriteEngine On 
+
+# Check if browser supports WebP images 
+RewriteCond %{HTTP_ACCEPT} image/webp 
+
+# Check if corresponding WebP file exists 
+RewriteCond %{REQUEST_FILENAME}.webp -f 
+
+# Serve the WebP image instead 
+RewriteRule (.+).(jpe?g|png)$ $1.webp [T=image/webp,E=accept:1] 
+
+# Add “Accept” header for WebP requests 
+Header append Vary Accept env=REDIRECT_accept
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # Check if browser supports WebP images
+  RewriteCond %{HTTP_ACCEPT} image/webp
+
+  # Check if WebP replacement image exists
+  RewriteCond %{DOCUMENT_ROOT}/$1.webp -f
+
+  # Serve WebP image instead
+  RewriteRule (.+)\.(jpe?g|png|gif)$ $1.webp [T=image/webp,E=REQUEST_image]
+</IfModule>
+
+<IfModule mod_headers.c>
+  # Vary: Accept for all the requests to jpeg, png and gif
+  Header append Vary Accept env=REQUEST_image
+</IfModule>
+
+<IfModule mod_mime.c>
+  AddType image/webp .webp
+</IfModule>

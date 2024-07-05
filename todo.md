@@ -1,0 +1,73 @@
+- Fare caricare app config su environment e container
+- sistemare locale
+- cache standard
+- logger
+- config split elements
+- errori validator traduzione
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
