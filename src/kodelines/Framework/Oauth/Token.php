@@ -124,7 +124,7 @@ class Token
             "jti" => $jti,
             "aud" => self::$client_id,
             "alg" => config('token','algorithm'),
-            'iss' => address() . '/oauth/token?client_id=' . $client_id,  // Issuer
+            'iss' => stripos($_SERVER['SERVER_PROTOCOL'],'https') === 0 ? 'https://' : 'http://' . $_SERVER['SERVER_NAME'] . '/oauth/token?client_id=' . $client_id,  // Issuer
             "sub" => !empty($user[config('token','identifier')]) ?  $user[config('token','identifier')] : null,
             "kid" => self::$kid,
             "scope" => !empty($user['auth']) ? Scope::name($user['auth']) : "guest"

@@ -101,8 +101,7 @@ class Config
                 "name" => null
             ],
             "api" => [
-                "xname" => "X-",
-                "translate" => true
+                "xname" => "X-"
             ],
             "token" => [
                 "expire_time" => "24 hours",

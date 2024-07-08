@@ -315,7 +315,7 @@ class UsersController extends Controller {
     public function sendActivation(Request $request, Response $response,array $args) : Response{
 
         //TODO: sistemare
-        $full_url = 'https://bottle-up.com';
+        $full_url = 'https://domain.com';
 
    
         if(empty($this->data['email'])) {

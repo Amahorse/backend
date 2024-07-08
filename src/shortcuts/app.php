@@ -66,53 +66,34 @@ if (!function_exists('language')) {
   }
 }
 
-if (!function_exists('address')) {
-  /**
-   * Shortcut to get app language
-   *
-   * @return string
-   */
-  function address(): string
-  {
-    return App::getInstance()->address;
-  }
-}
 
 if (!function_exists('user')) {
-
   /**
    * Ritorna valori utente in sessione, può tornare false se utente non loggato, tutto l'array di valori o il singolo specificato
    *
    * @param string $value
+   * @param string|bool $sub
    * @return mixed
    */
   function user($value = null, $sub = false): mixed
   {
-
-    $user = $_ENV['user'];
-
-    if (empty($user)) {
+    if (empty($_ENV['user'])) {
       return false;
     }
 
     if (!$value) {
-      return $user;
+      return $_ENV['user'];
     }
 
-    if (!isset($user[$value])) {
+    if (!isset($_ENV['user'][$value])) {
       return false;
     }
 
-    if($sub) {
-
-      if(!isset($user[$value][$sub])) {
-        return false;
-      }
-
-      return $user[$value][$sub];
+    if ($sub && !isset($_ENV['user'][$value][$sub])) {
+      return false;
     }
 
-    return $user[$value];
+    return $sub ? $_ENV['user'][$value][$sub] : $_ENV['user'][$value];
   }
 }
 

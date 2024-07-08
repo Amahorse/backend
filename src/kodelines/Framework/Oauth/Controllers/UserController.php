@@ -233,7 +233,7 @@ class UserController extends Controller
         }
 
         // 3. append domain name
-        $full_url = 'https://bottle-up.com';
+        $full_url = 'https://domain.com';
 
         if(empty($args['business'])) {
 

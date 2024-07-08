@@ -45,9 +45,6 @@ use Kodelines\Tools\Folder;
 
 return function (Slim $app) {
 
-    $app->map(['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], '/{routes:.+}', function ($request, $response) {
-        throw new HttpNotFoundException($request);
-    });
 
     //Options call to all routes
     $app->options('[/{params:.*}]', \Kodelines\Controllers\ApiController::class . ':preflight')->setName('api.preflight');
@@ -91,6 +88,10 @@ return function (Slim $app) {
     $app->post('/oauth/check', \Kodelines\Oauth\Controllers\UserController::class . ':check')->setName('oauth.check');
 
     $app = loadElementsRoutes($app);
+
+    $app->map(['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], '/{routes:.+}', function ($request, $response) {
+      throw new HttpNotFoundException($request);
+  });
 
 };
 

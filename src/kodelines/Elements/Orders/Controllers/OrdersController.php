@@ -24,7 +24,6 @@ class OrdersController extends Controller {
    */
   public function fullList(Request $request, Response $response) : Response {
 
-    //TODO: check filtro id_stores a nullo, da rimuovere quando gestito bottle up come store
     if(isset($this->data['id_stores']) && $this->data['id_stores'] === 0) {
       $this->data['id_stores'] = null;
     } elseif (isset($this->data['id_stores']) && $this->data['id_stores'] == '') {

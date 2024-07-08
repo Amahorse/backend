@@ -694,17 +694,6 @@ class Orders extends Decorator  {
         
       }
 
-       /*
-       TODO: fare email ordine annullato con opzione su pannello ordine
-
-       if($send_email) {
-
-         Mailer::queue('order-complete', $order['id_users'], $order,false,1);
-
-         Mailer::queue('order-complete', 'info@bottle-up.com', $order,false,1);
-
-       }
-       */
 
        return true;
 
@@ -973,11 +962,6 @@ class Orders extends Decorator  {
 
     $config =  config('invoices','default');
 
-    /* TODO: USA riabilitare per fatturare con reseller usa, prendere dati fatturazione reseller o spedizione per ddt ma occhio a intesa san paolo, mettere dati bottle-up
-    if(!empty($order['id_resellers'] && $store = Resellers::get($order['id_resellers']))) {
-      $config = $store;
-    } 
-    */
 
     if($type == 'invoice_out') {
 
