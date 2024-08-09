@@ -87,6 +87,10 @@ return function (Slim $app) {
 
     $app->post('/oauth/check', \Kodelines\Oauth\Controllers\UserController::class . ':check')->setName('oauth.check');
 
+    //Test
+    $app->get('/test/{type}', \Kodelines\Controllers\TestController::class . ':get')->setName('test.get');
+
+
     $app = loadElementsRoutes($app);
 
     $app->map(['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], '/{routes:.+}', function ($request, $response) {

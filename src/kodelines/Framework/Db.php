@@ -406,6 +406,50 @@ class Db
 	}
 
  
+  /**
+   * Genera un array chiave->valore per valori enum del database da usare in input select
+   *
+   * @param string $table
+   * @param string $field
+   * @param array $extra
+   * @return array
+   */
+  public static function enumOptions(string $table, string $field,$extra = []): array {
+
+
+
+    if(!$fields = self::getEnum($table,$field)) {
+      return array();
+    }
+
+    $options = array();
+
+    foreach($fields as $key => $value) {
+
+      if(isset($translations[$value])) {
+        $text = $translations[$value];
+      } else {
+        $text = $value;
+      }
+
+      $options[$value] = $text;
+    }
+
+    if(!empty($extra)) {
+      foreach($extra as $key => $value) {
+
+        if(isset($translations[$value])) {
+          $text = $translations[$value];
+        } else {
+          $text = $value;
+        }
+
+        $options[$value] = $text;
+      }
+    }
+
+    return $options;
+  }
 
 
 }

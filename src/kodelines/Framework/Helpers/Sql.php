@@ -36,6 +36,16 @@ class Sql
 	 */
 	public $bulk = false;
 
+	/**
+	 * Contiene ultimo errore registrato per modalità skipError
+	 */
+	public $lastError = null;
+
+	/**
+	 * Se settato a true non fa thrown error ma return false
+	 */
+	public $skipError = false;
+
 
 	/**
 	 * Il costruttore crea connessione
@@ -101,7 +111,13 @@ class Sql
 
 		} catch (PDOException $e) {
 
-			throw new Error($e->getMessage());
+			if(!$this->skipError) {
+				throw new Error($e->getMessage());
+			}
+
+			$this->lastError = $e->getMessage();
+			
+			return false;
 
 		}
 	}
@@ -145,19 +161,24 @@ class Sql
 			//Save Query Log
 			new Log('sql', $sql, $values);
 
-			if(!$stmt->execute()) {
-				return false;
+			$statement = $stmt->execute();
+
+			if($mode == 'INSERT') {
+				return $this->lastInsertId();
 			}
 
-			if($id = $this->lastInsertId()) {
-				return $id;
-			}
-
-			return true;
+			return $statement;
 
 		} catch (PDOException $e) {
 
-			throw new Error($e->getMessage());
+			if(!$this->skipError) {
+				throw new Error($e->getMessage());
+			}
+
+			$this->lastError = $e->getMessage();
+			
+			return false;
+
 		}
 	}
 
@@ -206,7 +227,13 @@ class Sql
 
 		} catch (PDOException $e) {
 
-			throw new Error($e->getMessage());
+			if(!$this->skipError) {
+				throw new Error($e->getMessage());
+			}
+
+			$this->lastError = $e->getMessage();
+		
+			return false;
 		}
 	}
 
@@ -301,7 +328,13 @@ class Sql
 
 		} catch (PDOException $e) {
 
-			throw new Error($e->getMessage());
+			if(!$this->skipError) {
+				throw new Error($e->getMessage());
+			}
+
+			$this->lastError = $e->getMessage();
+			
+			return false;
 		}
 	}
 
@@ -329,9 +362,16 @@ class Sql
 			new Log('sql', $sql, ['id' => $id]);
 
 			return $stmt->execute();
+
 		} catch (PDOException $e) {
 
-			throw new Error($e->getMessage());
+			if(!$this->skipError) {
+				throw new Error($e->getMessage());
+			}
+
+			$this->lastError = $e->getMessage();
+			
+			return false;
 		}
 	}
 
@@ -395,14 +435,16 @@ class Sql
 
 	}
 
+
+
+
 	/**
 	 * Recupera varie righe database er ritorna array
 	 *
 	 * @param  string $query
-	 * @param  bool   $strict
 	 * @return array
 	 */
-	public function getArray($query): array
+	public function getArray($query): array|bool
 	{
 	
 		try {
@@ -428,7 +470,13 @@ class Sql
 
 		} catch (PDOException $e) {
 
-			throw new Error($e->getMessage());
+			if(!$this->skipError) {
+				throw new Error($e->getMessage());
+			}
+
+			$this->lastError = $e->getMessage();
+			
+			return false;
 
 		}
 	}

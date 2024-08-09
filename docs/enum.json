@@ -1,0 +1,21 @@
+{
+    "family" : {
+        "engish_riding" : "Monta Inglese",
+        "western_riding" : "Monta Western",
+        "others_riding" : "Altre Monte",
+        "stable" : "Stalla",
+        "pet" : "PET"
+    },
+    "gender" : {
+        "male" : "Uomo",
+        "female": "Donna"
+    },
+    "age" : {
+        "young" : "Bambino",
+        "adult" : "Adulto"
+    },
+    "type" : {
+        "horse" : "Cavallo",
+        "rider" : "Cavaliere"
+    }
+}

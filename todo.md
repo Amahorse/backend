@@ -10,7 +10,7 @@
 
 
 
-
+- Importare model da bottle up per funzione getAll modificata
 
 
 
