@@ -10,7 +10,8 @@ use Kodelines\Abstract\Controller;
 use Elements\Products\Import as Products;
 use Elements\Categories\Import as Categories;
 use Elements\Brands\Import as Brands;
-use Elements\Import\Store;
+use Elements\Store\Import as Store;
+use Elements\Users\Import as Users;
 use Psr\Http\Message\RequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
@@ -32,7 +33,16 @@ class TestController extends Controller
             Categories::start();
         } elseif($args['type'] == 'brands') {
             Brands::start();
-        } else {
+        } elseif($args['type'] == 'icons') {
+            Products::icons();
+        } elseif($args['type'] == 'prices') {
+            Store::prices();
+        } elseif($args['type'] == 'availabilities') {
+            Store::availabilities();
+        } elseif($args['type'] == 'users') {
+            Users::start();
+        } 
+        else {
             return $this->response($response,false);
         }
         

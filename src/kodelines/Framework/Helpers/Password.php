@@ -68,6 +68,7 @@ class Password {
 		if(empty($password)) {
 			$password = Str::random($config['minimum_length'] + 2);
 		} else {
+			//TODO: errore, fare meglio
 			self::validate($password);
 		}
 

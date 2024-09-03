@@ -18,7 +18,6 @@ class Import
         
         Db::getInstance()->skipError = true;
 
-        $insert['date_last_sync'] = _NOW_;
 
         //recupero categorie esistenti dal db per controllo insert, update o eliminazione
         $exists = Categories::getCodes();
@@ -30,8 +29,6 @@ class Import
             $insert = [];
 
             $insert['uniqid'] = Categories::getUniqId($values);
-
-            $insert['date_last_sync'] = _NOW_;
 
             //L'id si recuper dai vecchi se settato l'uniq id
             if(isset($exists[$insert['uniqid']])) {
@@ -95,7 +92,9 @@ class Import
             }
 
         }
-        
+
+        //Rifaccio get categorie esistenti
+        $exists = Categories::getCodes();
         
         foreach(Json::arrayFromFile(_DIR_UPLOADS_ .'import/categories.json') as $values) {
 
@@ -110,9 +109,9 @@ class Import
 
             } else {
 
-                if(!$id_categories_main = Db::getValue("SELECT id FROM categories WHERE uniqid = " . encode($values['id_parent_category']),true)) {
+                if(!$id_categories_main = Db::getValue("SELECT id FROM categories WHERE uniqid = " . encode(trim($values['id_parent_category'])),true)) {
                 
-                    Log::error('categories',$uniqid,'Categoria principale non trovata',Db::getInstance()->lastError);
+                    Log::error('categories',trim($values['id_parent_category']),'Categoria principale non trovata');
     
                     continue;
                 }
@@ -123,7 +122,7 @@ class Import
 
             if(!isset($exists[$uniqid])) {
                 
-                Log::error('categories',$insert['id_categories_main'],'Categoria principale non trovata',Db::getInstance()->lastError);
+                Log::error('categories',$uniqid,'Categoria non trovata');
 
                 continue;
             }

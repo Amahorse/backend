@@ -13,10 +13,10 @@ class Categories extends Decorator  {
     public static function getUniqId(array $values):string {
 
         if(empty($values['id_parent_category']) || $values['id_parent_category'] == '0') {
-            return $insert['uniqid'] = $values['id_category'];
+            return $insert['uniqid'] = trim($values['id_category']);
         } 
         
-        return  $insert['uniqid'] = $values['id_parent_category'] . '-' . $values['id_category'];
+        return  $insert['uniqid'] = trim($values['id_parent_category']) . '-' . trim($values['id_category']);
         
     }
 

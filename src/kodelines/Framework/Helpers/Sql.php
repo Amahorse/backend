@@ -547,7 +547,13 @@ class Sql
 
 		$rows = array();
 
-		foreach($this->getArray("SHOW COLUMNS FROM " . $table) as $row) {
+		$columns = $this->getArray("SHOW COLUMNS FROM " . $table);
+
+		if(!$columns) {
+			throw new Error('Table ' . $table . ' not exists');
+		}
+
+		foreach($columns as $row) {
 		
 			$rows[$row['Field']] =  array('name' => $row['Field'], 'default' => $row['Default'], 'type' => $this->getType($row['Type']));
 

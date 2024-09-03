@@ -128,21 +128,14 @@ class Config
                     //Dimensioni standard thumbnails dopo upload
                     "thumbnails" => [
                         "micro" => ['x' => 10, 'y' => 10],
-                        "thumb" => ['x' => 300, 'y' => 300],
-                        "medium" => ['x' => 720, 'y' => 720],
-                        "large" => ['x' => 1440, 'y' => 1440]
+                        "thumb" => ['x' => 200, 'y' => 200],
+                        "medium" => ['x' => 300, 'y' => 300],
+                        "large" => ['x' => 800, 'y' => 800]
                     ]
                 ],
                 "files" => [
                     "random_names" => true
                 ]
-            ],
-            //dimensioni thumbnails di default
-            "thumbnails" => [
-                "micro" => ['x' => 10, 'y' => 10],
-                "thumb" => ['x' => 300, 'y' => 300],
-                "medium" => ['x' => 720, 'y' => 720],
-                "large" => ['x' => 1440, 'y' => 1440]
             ],
             "domains" => [] //Può contenere vari domini per applicazione, dentro ci vanno anche i cron runner su array ["cron" => ["tempo" => "comando"]]
         ];

@@ -22,17 +22,13 @@ class Import
         $exists = Brands::getCodes();
 
         //Foreach json categorie per inserimento o aggiornamento
-        foreach(Json::arrayFromFile(_DIR_UPLOADS_ .'import/brand.json') as $values) {
+        foreach(Json::arrayFromFile(_DIR_UPLOADS_ .'import/brands.json') as $values) {
 
             $insert = [];
 
-            $insert['date_last_sync'] = _NOW_;
-
             $insert['code'] = $values['brand_code'];
 
-            $insert['title'] = $values['brand_description'];
-
-            $insert['date_last_sync'] = _NOW_;
+              $insert['title'] = $values['brand_description'];
 
             //L'id si recuper dai vecchi se settato l'uniq id
             if(isset($exists[$insert['code']])) {

@@ -19,16 +19,6 @@ class Factory implements FactoryInterface
    */
   public static function loadRoutes(RouteCollectorProxy $app): RouteCollectorProxy {
 
-    /**
-     * Tipologie e tipi
-     */
-    $app->get('/products/{type}/typologies', \Elements\Products\Controllers\ProductsController::class . ':typologies')->setName('products.typolgies');
-
-    /**
-     * organolectic_macroclassification per prodotto
-     */
-    $app->get('/products/{type}/organolectic_macroclassification', \Elements\Products\Controllers\ProductsController::class . ':organolectic_macroclassification')->setName('products.organolectic_macroclassification');
-
     $app->get('/products', \Elements\Products\Controllers\ProductsController::class . ':list')->setName('products.list');
 
     $app->get('/products/{id}', \Elements\Products\Controllers\ProductsController::class . ':get')->setName('products.get');

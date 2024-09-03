@@ -1,6 +1,6 @@
 -- --------------------------------------------------------
 -- Host:                         bottleuproduction.c6sthmahhial.eu-west-1.rds.amazonaws.com
--- Versione server:              10.4.32-MariaDB-log - Source distribution
+-- Versione server:              10.4.34-MariaDB-log - Source distribution
 -- S.O. server:                  Linux
 -- HeidiSQL Versione:            12.6.0.6765
 -- --------------------------------------------------------
@@ -19,16 +19,18 @@ CREATE TABLE IF NOT EXISTS `brands` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `code` varchar(4) NOT NULL DEFAULT '0',
   `status` enum('draft','hidden','published') NOT NULL DEFAULT 'draft',
+  `title` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `evidence` tinyint(1) unsigned zerofill NOT NULL DEFAULT 0,
   `cover` varchar(200) DEFAULT NULL,
   `logo_svg` mediumtext DEFAULT NULL,
   `logo_png` varchar(200) DEFAULT NULL,
+  `date_last_sync` timestamp NOT NULL DEFAULT current_timestamp(),
   `date_ins` timestamp NOT NULL DEFAULT current_timestamp(),
   `date_update` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`),
   UNIQUE KEY `code` (`code`),
   KEY `status` (`status`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB AUTO_INCREMENT=134 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=COMPACT;
 
 -- L’esportazione dei dati non era selezionata.
 
@@ -37,7 +39,6 @@ CREATE TABLE IF NOT EXISTS `brands_lang` (
   `id_brands` int(11) unsigned DEFAULT NULL,
   `language` char(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `slug` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `title` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `description` text DEFAULT NULL,
   `meta_title` text DEFAULT NULL,
   `meta_description` text DEFAULT NULL,
@@ -51,8 +52,9 @@ CREATE TABLE IF NOT EXISTS `brands_lang` (
 
 -- Dump della struttura di tabella bottleup_clear.categories
 CREATE TABLE IF NOT EXISTS `categories` (
-  `id` int(11) unsigned NOT NULL,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `id_categories_main` int(11) unsigned DEFAULT NULL,
+  `uniqid` varchar(50) NOT NULL DEFAULT '',
   `status` enum('draft','hidden','published') NOT NULL DEFAULT 'draft',
   `evidence` tinyint(1) unsigned zerofill NOT NULL DEFAULT 0,
   `cover` varchar(200) DEFAULT NULL,
@@ -61,11 +63,12 @@ CREATE TABLE IF NOT EXISTS `categories` (
   `date_last_sync` timestamp NOT NULL DEFAULT current_timestamp(),
   `date_ins` timestamp NOT NULL DEFAULT current_timestamp(),
   `date_update` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  UNIQUE KEY `id` (`id`),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`uniqid`) USING BTREE,
   KEY `status` (`status`),
   KEY `FK_store_categories_store_categories` (`id_categories_main`),
-  CONSTRAINT `FK_store_categories_store_categories` FOREIGN KEY (`id_categories_main`) REFERENCES `categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=COMPACT;
+  CONSTRAINT `FK_categories_categories` FOREIGN KEY (`id_categories_main`) REFERENCES `categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=2197 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=COMPACT;
 
 -- L’esportazione dei dati non era selezionata.
 
@@ -81,8 +84,86 @@ CREATE TABLE IF NOT EXISTS `categories_lang` (
   UNIQUE KEY `id_ftstore_categories_language` (`id_categories`,`language`),
   UNIQUE KEY `language_slug` (`language`,`slug`),
   FULLTEXT KEY `title` (`title`),
-  CONSTRAINT `FK_ftstore_categories_lang_store_categories` FOREIGN KEY (`id_categories`) REFERENCES `categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `FK_categories_lang_categories` FOREIGN KEY (`id_categories`) REFERENCES `categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=COMPACT;
+
+-- L’esportazione dei dati non era selezionata.
+
+-- Dump della struttura di tabella bottleup_clear.cms_menu
+CREATE TABLE IF NOT EXISTS `cms_menu` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `language` varchar(4) NOT NULL DEFAULT '0',
+  `domain` varchar(50) NOT NULL DEFAULT '0',
+  `name` varchar(50) NOT NULL DEFAULT '0',
+  `date_ins` timestamp NOT NULL DEFAULT current_timestamp(),
+  `date_update` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `language_domain_name` (`language`,`domain`,`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=54 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- L’esportazione dei dati non era selezionata.
+
+-- Dump della struttura di tabella bottleup_clear.cms_menu_points
+CREATE TABLE IF NOT EXISTS `cms_menu_points` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id_cms_menu` int(11) unsigned DEFAULT NULL,
+  `id_cms_pages` int(11) unsigned DEFAULT NULL,
+  `id_cms_menu_child` int(11) unsigned DEFAULT NULL,
+  `id_categories` int(11) unsigned DEFAULT NULL,
+  `title` text NOT NULL,
+  `url` text DEFAULT NULL,
+  `link_type` enum('page','url') NOT NULL DEFAULT 'page',
+  `target` enum('_self','_blank') NOT NULL DEFAULT '_self',
+  `sort_order` int(2) unsigned zerofill NOT NULL DEFAULT 00,
+  `family` set('english_riding','western_riding','others_riding','stable','pet') NOT NULL,
+  `gender` set('male','female') DEFAULT NULL,
+  `age` set('adult','child') DEFAULT NULL,
+  `type` set('horse','rider') DEFAULT NULL,
+  `date_ins` timestamp NOT NULL DEFAULT current_timestamp(),
+  `date_update` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `FK_cms_menu_points_cms_pages` (`id_cms_pages`),
+  KEY `FK_cms_menu_points_cms_menu` (`id_cms_menu`),
+  KEY `FK_cms_menu_points_cms_menu_2` (`id_cms_menu_child`),
+  KEY `FK_cms_menu_points_categories` (`id_categories`),
+  CONSTRAINT `FK_cms_menu_points_categories` FOREIGN KEY (`id_categories`) REFERENCES `categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_cms_menu_points_cms_menu` FOREIGN KEY (`id_cms_menu`) REFERENCES `cms_menu` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_cms_menu_points_cms_menu_2` FOREIGN KEY (`id_cms_menu_child`) REFERENCES `cms_menu` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_cms_menu_points_cms_pages` FOREIGN KEY (`id_cms_pages`) REFERENCES `cms_pages` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=187 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- L’esportazione dei dati non era selezionata.
+
+-- Dump della struttura di tabella bottleup_clear.cms_pages
+CREATE TABLE IF NOT EXISTS `cms_pages` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `id_resellers` int(10) unsigned DEFAULT NULL,
+  `page` varchar(250) DEFAULT NULL,
+  `domain` varchar(50) DEFAULT NULL,
+  `language` varchar(4) DEFAULT NULL,
+  `slug` varchar(250) DEFAULT NULL,
+  `status` enum('published','hidden','draft') NOT NULL DEFAULT 'published',
+  `mode` enum('category','product','manual') NOT NULL DEFAULT 'manual',
+  `type` enum('b2b','b2c','horeca') NOT NULL DEFAULT 'b2c',
+  `cover` varchar(200) DEFAULT NULL,
+  `model` varchar(200) DEFAULT NULL,
+  `json` varchar(200) DEFAULT NULL,
+  `meta_title` text DEFAULT NULL,
+  `meta_description` text DEFAULT NULL,
+  `product_type` enum('wine','beer','oil','spirits','drinks','food','boxes','packages','printing','cards','labels','accessories','other') DEFAULT NULL,
+  `id_categories` int(11) unsigned DEFAULT NULL,
+  `indexable` tinyint(3) unsigned DEFAULT NULL,
+  `priority` varchar(4) DEFAULT NULL,
+  `date_ins` timestamp NOT NULL DEFAULT current_timestamp(),
+  `date_update` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `page_domain_language` (`page`,`domain`,`language`),
+  UNIQUE KEY `domain_language_slug` (`domain`,`language`,`slug`),
+  KEY `FK_cms_pages_categories` (`id_categories`),
+  KEY `FK_cms_pages_resellers` (`id_resellers`),
+  CONSTRAINT `FK_cms_pages_categories` FOREIGN KEY (`id_categories`) REFERENCES `categories` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `FK_cms_pages_resellers` FOREIGN KEY (`id_resellers`) REFERENCES `resellers` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=225 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- L’esportazione dei dati non era selezionata.
 
@@ -133,12 +214,10 @@ CREATE TABLE IF NOT EXISTS `countries_states` (
 -- Dump della struttura di tabella bottleup_clear.data
 CREATE TABLE IF NOT EXISTS `data` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `id_users` int(10) unsigned NOT NULL,
   `id_countries` int(10) unsigned DEFAULT NULL,
-  `id_countries_states` int(10) unsigned DEFAULT NULL,
-  `table_name` varchar(50) NOT NULL DEFAULT 'users',
-  `table_id` int(10) unsigned NOT NULL,
-  `main` tinyint(4) NOT NULL DEFAULT 0,
   `header` text NOT NULL,
+  `type` enum('contacts','newsletter','invoice','shipping') NOT NULL DEFAULT 'contacts',
   `address` text DEFAULT NULL,
   `address_note` text DEFAULT NULL,
   `co` text DEFAULT NULL,
@@ -156,43 +235,9 @@ CREATE TABLE IF NOT EXISTS `data` (
   `date_update` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`),
   KEY `FK_expeditions_data_geo_countries` (`id_countries`),
-  KEY `table_id` (`table_id`),
-  KEY `table_name` (`table_name`),
-  KEY `FK_expeditions_data_geo_provinces` (`id_countries_states`) USING BTREE,
-  KEY `main` (`main`) USING BTREE,
-  CONSTRAINT `FK_expeditions_data_geo_countries` FOREIGN KEY (`id_countries`) REFERENCES `countries` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `FK_shipping_data_countries_states` FOREIGN KEY (`id_countries_states`) REFERENCES `countries_states` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+  KEY `id_users` (`id_users`),
+  CONSTRAINT `FK_expeditions_data_geo_countries` FOREIGN KEY (`id_countries`) REFERENCES `countries` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=39818 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- L’esportazione dei dati non era selezionata.
-
--- Dump della struttura di tabella bottleup_clear.data_history
-CREATE TABLE IF NOT EXISTS `data_history` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `id_countries` int(10) unsigned DEFAULT NULL,
-  `id_countries_states` int(10) unsigned DEFAULT NULL,
-  `header` text DEFAULT NULL,
-  `address` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `address_note` mediumtext DEFAULT NULL,
-  `co` text DEFAULT NULL,
-  `ca` text DEFAULT NULL,
-  `city` varchar(250) DEFAULT NULL,
-  `zip_code` varchar(10) DEFAULT NULL,
-  `phone` varchar(64) DEFAULT NULL,
-  `phone_prefix` varchar(10) DEFAULT NULL,
-  `formatted_address` text DEFAULT NULL,
-  `sdi_code` varchar(40) DEFAULT NULL,
-  `fiscal_code` text DEFAULT NULL,
-  `vat_number` text DEFAULT NULL,
-  `pec` varchar(120) DEFAULT NULL,
-  `pa` tinyint(4) DEFAULT 0,
-  `date_ins` timestamp NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`),
-  KEY `FK_expeditions_data_history_geo_countries` (`id_countries`),
-  KEY `FK_expeditions_data_history_geo_provinces` (`id_countries_states`) USING BTREE,
-  CONSTRAINT `FK_expeditions_data_history_geo_countries` FOREIGN KEY (`id_countries`) REFERENCES `countries` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE,
-  CONSTRAINT `FK_shipping_data_history_countries_states` FOREIGN KEY (`id_countries_states`) REFERENCES `countries_states` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=95819 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- L’esportazione dei dati non era selezionata.
 
@@ -206,7 +251,18 @@ CREATE TABLE IF NOT EXISTS `import_errors` (
   `date_ins` timestamp NOT NULL DEFAULT current_timestamp(),
   `date_update` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13533 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- L’esportazione dei dati non era selezionata.
+
+-- Dump della struttura di tabella bottleup_clear.import_logs
+CREATE TABLE IF NOT EXISTS `import_logs` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `import` varchar(10) NOT NULL,
+  `date_start` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `date_end` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- L’esportazione dei dati non era selezionata.
 
@@ -253,27 +309,33 @@ CREATE TABLE IF NOT EXISTS `oauth_tokens` (
 -- Dump della struttura di tabella bottleup_clear.products
 CREATE TABLE IF NOT EXISTS `products` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `id_brands` int(11) unsigned DEFAULT NULL,
   `code` varchar(45) NOT NULL,
-  `family` set('english_riding','western_riding','others_riding','stable','pet') NOT NULL,
+  `family` set('english_riding','western_riding','others_riding','stable','pet','display') NOT NULL,
   `gender` set('male','female') DEFAULT NULL,
-  `age` set('adult','young','child') DEFAULT NULL,
+  `age` set('adult','child') DEFAULT NULL,
   `type` set('horse','rider') DEFAULT NULL,
-  `a0` enum('size','height','handle','calf-size','color','type','taste','chest-size','eco-wool-color','tie','gel-color','main-color','fabric-color','flag','seat-color','buckle','print','crystal-color','dri-lex-color','fitting-color','fork-size','headstall-size','lenght','manufacturing','material','micropile-color','quarter-size','rope-color','sheepskin-color','tooling') DEFAULT NULL,
-  `a1` enum('size','height','handle','calf-size','color','type','taste','chest-size','eco-wool-color','tie','gel-color','main-color','fabric-color','flag','seat-color','buckle','print','crystal-color','dri-lex-color','fitting-color','fork-size','headstall-size','lenght','manufacturing','material','micropile-color','quarter-size','rope-color','sheepskin-color','tooling') DEFAULT NULL,
-  `a4` enum('size','height','handle','calf-size','color','type','taste','chest-size','eco-wool-color','tie','gel-color','main-color','fabric-color','flag','seat-color','buckle','print','crystal-color','dri-lex-color','fitting-color','fork-size','headstall-size','lenght','manufacturing','material','micropile-color','quarter-size','rope-color','sheepskin-color','tooling') DEFAULT NULL,
+  `material` set('bamboo','dry-lex','eco-fur','eva','faux-sheepskin','felt','gel','leather','memory-foam','micropile','sheepskin','3d-spacer','cotton','louvre-bamboo','louvre','lycra','suede','wool') DEFAULT NULL,
+  `tech` set('anallergic-antibacterial','antistatic','back-riser','breathable','carbon-finish','not-dry-clean','not-tumble-dry','double-riser','easy-care','eco-friendly','extra-grip-tread','extra-wide-tread','flexible-arch','flexible-tread','fly-protect','front-riser','grip-system','hand-wash','high-quality','high-resistance','hypoallergenic','inclined-tread','insulating','just-use-30','lightweight','light-aluminium','low-iron','low-knee-impact','made-in-italy','mag-system','max-ld-150','max-ld-200','max-ld-500','max-ld-80','middle-riser','natural-deodorize','patented-design','pocket-configuration','quick-dry','reflective','shock-absorbing','softness','spine-free','stirrup-orientation','stretchable','synthetic','thermal-insulator','touch','twin-side','water-repellent','waterproof','windproof','withers-free','ac-grip-system','classic-withers-3d','classic-withers','dressage-shape','gel-grip','half-pad-shape','high quality','jumping-close','shaped-withers-3d') DEFAULT NULL,
+  `season` set('summer','winter') DEFAULT NULL,
+  `discipline` set('dressage','jump','pony') DEFAULT NULL,
+  `a0` enum('size','height','handle','calf-size','color','type','taste','chest-size','eco-wool-color','tie','gel-color','main-color','fabric-color','flag','seat-color','buckle','print','crystal-color','dri-lex-color','fitting-color','fork-size','headstall-size','lenght','manufacturing','material','micropile-color','quarter-size','rope-color','sheepskin-color','tooling','grip-color') DEFAULT NULL,
+  `a1` enum('size','height','handle','calf-size','color','type','taste','chest-size','eco-wool-color','tie','gel-color','main-color','fabric-color','flag','seat-color','buckle','print','crystal-color','dri-lex-color','fitting-color','fork-size','headstall-size','lenght','manufacturing','material','micropile-color','quarter-size','rope-color','sheepskin-color','tooling','grip-color') DEFAULT NULL,
+  `a4` enum('size','height','handle','calf-size','color','type','taste','chest-size','eco-wool-color','tie','gel-color','main-color','fabric-color','flag','seat-color','buckle','print','crystal-color','dri-lex-color','fitting-color','fork-size','headstall-size','lenght','manufacturing','material','micropile-color','quarter-size','rope-color','sheepskin-color','tooling','grip-color') DEFAULT NULL,
   `split` enum('a0','a1','a4') DEFAULT NULL,
-  `cover` text DEFAULT NULL,
-  `discount_class` varchar(10) NOT NULL,
-  `client_type` set('b2b','b2c') NOT NULL DEFAULT 'b2b,b2c',
-  `date_last_sync` timestamp NOT NULL DEFAULT current_timestamp(),
+  `market_sale` text DEFAULT NULL,
+  `discount_product_percentage` float(10,2) DEFAULT NULL,
+  `available_b2c` tinyint(1) DEFAULT NULL,
+  `available_b2b` tinyint(1) NOT NULL DEFAULT 0,
   `date_ins` timestamp NOT NULL DEFAULT current_timestamp(),
   `date_update` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
   UNIQUE KEY `code` (`code`) USING BTREE,
   KEY `type` (`family`) USING BTREE,
-  KEY `client_type` (`client_type`)
-) ENGINE=InnoDB AUTO_INCREMENT=6940 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+  KEY `FK_products_brands` (`id_brands`),
+  CONSTRAINT `FK_products_brands` FOREIGN KEY (`id_brands`) REFERENCES `brands` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=7077 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 -- L’esportazione dei dati non era selezionata.
 
@@ -295,8 +357,20 @@ CREATE TABLE IF NOT EXISTS `products_categories` (
 CREATE TABLE IF NOT EXISTS `products_lang` (
   `id_products` int(11) unsigned NOT NULL,
   `language` char(2) NOT NULL,
-  `title` text DEFAULT NULL,
-  UNIQUE KEY `id_products_language` (`id_products`,`language`) USING BTREE,
+  `slug` varchar(180) DEFAULT NULL,
+  `title` varchar(200) DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `content` text DEFAULT NULL,
+  `meta_title` text DEFAULT NULL,
+  `meta_description` text DEFAULT NULL,
+  `indexable` tinyint(3) unsigned DEFAULT 0,
+  `size_fit` text DEFAULT NULL,
+  `tech_spec` text DEFAULT NULL,
+  `composition` text DEFAULT NULL,
+  `info_care` text DEFAULT NULL,
+  UNIQUE KEY `id_store_products_language` (`id_products`,`language`) USING BTREE,
+  UNIQUE KEY `language_slug` (`language`,`slug`),
+  FULLTEXT KEY `title` (`title`),
   CONSTRAINT `FK_products_lang_products` FOREIGN KEY (`id_products`) REFERENCES `products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
@@ -305,71 +379,14 @@ CREATE TABLE IF NOT EXISTS `products_lang` (
 -- Dump della struttura di tabella bottleup_clear.stores
 CREATE TABLE IF NOT EXISTS `stores` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `id_resellers` int(10) unsigned DEFAULT NULL,
-  `id_agents` int(10) unsigned DEFAULT NULL,
-  `id_countries` int(10) unsigned DEFAULT NULL,
   `name` varchar(150) DEFAULT NULL,
-  `visibility` enum('visible','hidden') NOT NULL DEFAULT 'visible',
-  `status` enum('active','suspended') NOT NULL DEFAULT 'active',
-  `type` enum('b2c','b2b','horeca') NOT NULL DEFAULT 'b2c',
-  `locale` enum('it-IT','it-CH','de-CH','en-US') NOT NULL DEFAULT 'it-IT',
-  `payment_method` set('cash','bank_check','bank_transfer','paypal','cash_on_delivery_check','cash_on_delivery_cash','stripe','usa') DEFAULT NULL,
-  `pickup` tinyint(3) unsigned NOT NULL DEFAULT 0,
-  `delivery` tinyint(3) unsigned NOT NULL DEFAULT 0,
-  `price_display_taxes_excluded` tinyint(3) unsigned NOT NULL DEFAULT 0,
-  `price_recharge_percentage` int(10) unsigned DEFAULT NULL,
-  `payment_commission_percentage` float(10,4) unsigned DEFAULT 0.0000,
-  `minimum_order_price` float(10,2) unsigned DEFAULT NULL,
-  `minimum_order_quantity` int(10) unsigned DEFAULT NULL,
-  `maximum_order_quantity` int(10) unsigned DEFAULT NULL,
-  `shipping_delay` int(10) unsigned NOT NULL DEFAULT 1,
-  `shipping_max_hour` char(50) NOT NULL DEFAULT '12:00',
-  `checkout_mode` enum('site','configurator') DEFAULT 'configurator',
-  `zip_list` text CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image` varchar(150) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
+  `type` enum('b2c','b2b') NOT NULL DEFAULT 'b2c',
+  `currency` enum('USD','EUR','CAD') NOT NULL DEFAULT 'EUR',
+  `taxes_included` tinyint(3) unsigned NOT NULL DEFAULT 0,
   `date_ins` timestamp NOT NULL DEFAULT current_timestamp(),
   `date_update` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  PRIMARY KEY (`id`),
-  KEY `FK_store_vegetables_cities_store_vegetables` (`id_resellers`) USING BTREE,
-  KEY `FK_resellers_stores_countries` (`id_countries`),
-  KEY `FK_stores_agents` (`id_agents`),
-  FULLTEXT KEY `zip_code` (`zip_list`),
-  CONSTRAINT `FK_resellers_stores_countries` FOREIGN KEY (`id_countries`) REFERENCES `countries` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `FK_store_vegetables_cities_store_vegetables` FOREIGN KEY (`id_resellers`) REFERENCES `resellers` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_stores_agents` FOREIGN KEY (`id_agents`) REFERENCES `agents` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- L’esportazione dei dati non era selezionata.
-
--- Dump della struttura di tabella bottleup_clear.stores_images
-CREATE TABLE IF NOT EXISTS `stores_images` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `id_stores` int(11) unsigned DEFAULT NULL,
-  `image` varchar(100) DEFAULT NULL,
-  `date_ins` timestamp NOT NULL DEFAULT current_timestamp(),
-  `date_update` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  PRIMARY KEY (`id`) USING BTREE,
-  KEY `FK_manufacturers_pictures_manufacturers` (`id_stores`) USING BTREE,
-  CONSTRAINT `FK_stores_images_stores` FOREIGN KEY (`id_stores`) REFERENCES `stores` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=215 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
-
--- L’esportazione dei dati non era selezionata.
-
--- Dump della struttura di tabella bottleup_clear.stores_lang
-CREATE TABLE IF NOT EXISTS `stores_lang` (
-  `id_stores` int(11) unsigned NOT NULL,
-  `language` char(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0',
-  `slug` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `title` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `description` mediumtext DEFAULT NULL,
-  `content` longtext DEFAULT NULL,
-  `meta_title` varchar(200) DEFAULT NULL,
-  `meta_description` varchar(200) DEFAULT NULL,
-  `indexable` tinyint(3) unsigned DEFAULT 0,
-  UNIQUE KEY `id_store_products_language` (`id_stores`,`language`) USING BTREE,
-  UNIQUE KEY `language_slug` (`language`,`slug`) USING BTREE,
-  CONSTRAINT `FK_resellers_stores_lang_resellers_stores` FOREIGN KEY (`id_stores`) REFERENCES `stores` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=COMPACT COMMENT='BottleUp';
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- L’esportazione dei dati non era selezionata.
 
@@ -595,7 +612,10 @@ CREATE TABLE IF NOT EXISTS `store_products` (
   `sku` varchar(50) NOT NULL,
   `barcode` varchar(13) DEFAULT NULL,
   `status` enum('deleted','on_sale','not_on_sale','low_stock') NOT NULL DEFAULT 'not_on_sale',
-  `collection` set('cont','fw23','fw24','fw25') DEFAULT NULL,
+  `collection` set('CONT','ETS22','ETW22','ETS23','ETW23','ETS24','ETW24','ETS25','ETW25') DEFAULT NULL,
+  `season` set('summer','winter') DEFAULT NULL,
+  `color_primary` set('red','blue','multicolor','grey','green','fucsia','black','purple','transparent','white','natural','brown','beige','silver','bronze','rose-gold','yellow','burgundy','orange','pink','royal-blue','lime','carbon','cognac','gold','titanium','royal blue','rose gold') DEFAULT NULL,
+  `color_secondary` set('red','blue','multicolor','grey','green','fucsia','black','purple','transparent','white','natural','brown','beige','silver','bronze','rose-gold','yellow','burgundy','orange','pink','royal-blue','lime','carbon','cognac','gold','titanium','royal blue','rose gold') DEFAULT NULL,
   `availability_type` enum('warehouse','order') NOT NULL DEFAULT 'warehouse',
   `a0_code` varchar(8) DEFAULT NULL,
   `a0_description` varchar(50) DEFAULT NULL,
@@ -606,7 +626,9 @@ CREATE TABLE IF NOT EXISTS `store_products` (
   `a4_code` varchar(8) DEFAULT NULL,
   `a4_description` varchar(50) DEFAULT NULL,
   `a4_order` varchar(50) DEFAULT NULL,
-  `date_last_sync` timestamp NOT NULL DEFAULT current_timestamp(),
+  `cover` varchar(50) DEFAULT NULL,
+  `cover_url` text DEFAULT NULL,
+  `minimum_order` int(11) unsigned DEFAULT NULL,
   `date_ins` timestamp NOT NULL DEFAULT current_timestamp(),
   `date_update` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`),
@@ -616,7 +638,7 @@ CREATE TABLE IF NOT EXISTS `store_products` (
   KEY `status` (`status`),
   KEY `variant` (`variant`),
   CONSTRAINT `FK_store_products_products` FOREIGN KEY (`id_products`) REFERENCES `products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=1095 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=65721 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 -- L’esportazione dei dati non era selezionata.
 
@@ -624,17 +646,14 @@ CREATE TABLE IF NOT EXISTS `store_products` (
 CREATE TABLE IF NOT EXISTS `store_products_availability` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `id_store_products` int(11) unsigned DEFAULT NULL,
-  `id_stores` int(11) unsigned DEFAULT NULL,
-  `availability` int(11) DEFAULT NULL,
-  `status` enum('out_of_stock','on_sale','not_on_sale') NOT NULL DEFAULT 'on_sale',
+  `availability_b2c` int(11) DEFAULT NULL,
+  `availability_b2b` int(11) DEFAULT NULL,
   `date_ins` timestamp NOT NULL DEFAULT current_timestamp(),
   `date_update` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`),
   KEY `FK_store_products_availability_store_products` (`id_store_products`),
-  KEY `FK_store_products_availability_stores` (`id_stores`),
-  CONSTRAINT `FK_store_products_availability_store_products` FOREIGN KEY (`id_store_products`) REFERENCES `store_products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_store_products_availability_stores` FOREIGN KEY (`id_stores`) REFERENCES `stores` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  CONSTRAINT `FK_store_products_availability_store_products` FOREIGN KEY (`id_store_products`) REFERENCES `store_products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=29588 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- L’esportazione dei dati non era selezionata.
 
@@ -659,21 +678,23 @@ CREATE TABLE IF NOT EXISTS `store_products_components` (
 CREATE TABLE IF NOT EXISTS `store_products_discounts` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `id_store_products` int(11) unsigned NOT NULL,
+  `imported` tinyint(4) DEFAULT NULL,
   `id_countries` int(11) unsigned DEFAULT NULL,
-  `date_end` date DEFAULT NULL,
   `date_start` date DEFAULT NULL,
+  `date_end` date DEFAULT NULL,
   `quantity_min` int(10) DEFAULT NULL,
   `quantity_max` int(10) DEFAULT NULL,
-  `discount_percentage` float(10,2) DEFAULT NULL,
+  `discount_offer_percentage` float(10,2) DEFAULT NULL,
   `client_type` set('b2b','b2c','horeca') DEFAULT NULL,
   `date_ins` timestamp NOT NULL DEFAULT current_timestamp(),
   `date_update` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`),
+  UNIQUE KEY `id_store_products_imported` (`id_store_products`,`imported`),
   KEY `FK_ftstore_products_discounts_store_products` (`id_store_products`),
   KEY `FK_store_products_discounts_geo_countries` (`id_countries`),
   CONSTRAINT `FK_ftstore_products_discounts_store_products` FOREIGN KEY (`id_store_products`) REFERENCES `store_products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_store_products_discounts_geo_countries` FOREIGN KEY (`id_countries`) REFERENCES `countries` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=707 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB AUTO_INCREMENT=6019 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=COMPACT;
 
 -- L’esportazione dei dati non era selezionata.
 
@@ -682,7 +703,8 @@ CREATE TABLE IF NOT EXISTS `store_products_images` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `id_store_products` int(11) unsigned DEFAULT NULL,
   `image` varchar(100) DEFAULT NULL,
-  `description` varchar(200) DEFAULT NULL,
+  `image_url` text DEFAULT NULL,
+  `sorting` tinyint(3) unsigned DEFAULT NULL,
   `date_ins` timestamp NOT NULL DEFAULT current_timestamp(),
   `date_update` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`),
@@ -692,97 +714,57 @@ CREATE TABLE IF NOT EXISTS `store_products_images` (
 
 -- L’esportazione dei dati non era selezionata.
 
--- Dump della struttura di tabella bottleup_clear.store_products_lang
-CREATE TABLE IF NOT EXISTS `store_products_lang` (
-  `id_store_products` int(11) unsigned NOT NULL,
-  `language` char(2) NOT NULL,
-  `slug` varchar(180) DEFAULT NULL,
-  `title` text DEFAULT NULL,
-  `title_image` text DEFAULT NULL,
-  `description` longtext DEFAULT NULL,
-  `content` longtext DEFAULT NULL,
-  `tags` text DEFAULT NULL,
-  `meta_title` text DEFAULT NULL,
-  `meta_description` text DEFAULT NULL,
-  `indexable` tinyint(3) unsigned DEFAULT 0,
-  `merchant` tinyint(3) unsigned DEFAULT 1,
-  `merchant_title` text DEFAULT NULL,
-  `merchant_description` text DEFAULT NULL,
-  UNIQUE KEY `id_store_products_language` (`id_store_products`,`language`),
-  UNIQUE KEY `language_slug` (`language`,`slug`),
-  FULLTEXT KEY `title` (`title`),
-  CONSTRAINT `FK_ftstore_products_lang_store_products` FOREIGN KEY (`id_store_products`) REFERENCES `store_products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=COMPACT;
-
--- L’esportazione dei dati non era selezionata.
-
--- Dump della struttura di tabella bottleup_clear.store_products_resellers
-CREATE TABLE IF NOT EXISTS `store_products_resellers` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+-- Dump della struttura di tabella bottleup_clear.store_products_prices
+CREATE TABLE IF NOT EXISTS `store_products_prices` (
   `id_store_products` int(10) unsigned NOT NULL,
-  `id_resellers` int(10) unsigned NOT NULL,
-  `price_recharge_percentage` float DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE,
-  KEY `FK_store_products_landing_store_products` (`id_store_products`) USING BTREE,
-  KEY `FK_store_products_resellers_resellers` (`id_resellers`),
-  CONSTRAINT `FK_store_products_resellers_resellers` FOREIGN KEY (`id_resellers`) REFERENCES `resellers` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `store_products_resellers_ibfk_1` FOREIGN KEY (`id_store_products`) REFERENCES `store_products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=1978 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+  `id_stores` int(10) unsigned NOT NULL,
+  `price` float(10,2) NOT NULL,
+  `date_ins` timestamp NOT NULL DEFAULT current_timestamp(),
+  `date_update` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  UNIQUE KEY `id_store_products_id_stores` (`id_store_products`,`id_stores`),
+  KEY `FK__stores` (`id_stores`),
+  KEY `id_store_products` (`id_store_products`),
+  CONSTRAINT `FK__store_products` FOREIGN KEY (`id_store_products`) REFERENCES `store_products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK__stores` FOREIGN KEY (`id_stores`) REFERENCES `stores` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- L’esportazione dei dati non era selezionata.
 
 -- Dump della struttura di tabella bottleup_clear.users
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `id_agents` int(10) unsigned DEFAULT NULL,
-  `id_resellers` int(10) unsigned DEFAULT NULL,
-  `id_tracking` int(10) unsigned DEFAULT NULL,
+  `id_gamma` int(11) unsigned DEFAULT NULL,
+  `id_countries` int(10) unsigned DEFAULT NULL COMMENT 'Region code standard from https://sites.google.com/site/tomihasa/google-language-codes',
+  `id_stores` int(10) unsigned DEFAULT NULL,
   `username` char(180) NOT NULL,
   `email` varchar(180) NOT NULL,
   `password` varchar(200) NOT NULL,
   `hash` varchar(12) NOT NULL,
   `auth` smallint(4) unsigned NOT NULL DEFAULT 3000,
-  `type` enum('b2c','b2b','horeca') NOT NULL DEFAULT 'b2c',
+  `type` enum('b2b') NOT NULL DEFAULT 'b2b',
+  `status` enum('pending','approved','confirmed','deleted') NOT NULL DEFAULT 'pending',
   `language` char(10) NOT NULL DEFAULT 'en' COMMENT 'Standard language iso code',
-  `first_name` text DEFAULT NULL,
-  `last_name` text DEFAULT NULL,
   `business_name` text DEFAULT NULL,
-  `business_type` enum('company','hotel','restaurant','wine_shop','wedding','catering','pub','tavern','pizzeria','bar','club','resort','agritourism','event_planner','b&b','other') DEFAULT NULL,
-  `header` text DEFAULT NULL,
-  `sdi_code` varchar(40) DEFAULT NULL,
-  `fiscal_code` text DEFAULT NULL,
-  `vat_number` text DEFAULT NULL,
-  `pec` varchar(120) DEFAULT NULL,
-  `pa` tinyint(4) DEFAULT 0,
-  `description` text DEFAULT NULL,
-  `image` varchar(200) DEFAULT NULL COMMENT 'internal profile image or external by social login',
-  `birth` date DEFAULT NULL,
-  `gender` enum('male','female','other') DEFAULT NULL,
-  `id_countries` int(10) unsigned DEFAULT NULL COMMENT 'Region code standard from https://sites.google.com/site/tomihasa/google-language-codes',
-  `id_countries_states` int(10) unsigned DEFAULT NULL,
-  `address` text DEFAULT NULL,
-  `city` text DEFAULT NULL,
-  `zip_code` varchar(50) DEFAULT NULL,
-  `phone` varchar(50) DEFAULT NULL,
-  `phone_prefix` varchar(6) DEFAULT NULL,
+  `website` text DEFAULT NULL,
+  `website_ecommerce` tinyint(3) unsigned NOT NULL DEFAULT 0,
+  `website_type` enum('wordpress','prestashop','shopify','magento','custom','other') DEFAULT NULL,
+  `business_type` enum('wholesaler','saddlery','sport_association','online store','buying_group') DEFAULT NULL,
+  `discount_client_percentage` float(10,2) DEFAULT NULL,
+  `discount_contract_percentage` float(10,2) DEFAULT NULL,
+  `discount_final_percentage` float(10,2) DEFAULT NULL,
   `date_ins` timestamp NOT NULL DEFAULT current_timestamp(),
   `date_update` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`),
+  UNIQUE KEY `id_gamma` (`id_gamma`),
   KEY `password` (`password`(191)),
   KEY `hash` (`hash`),
   KEY `FK_users_countries` (`id_countries`),
-  KEY `FK_users_tracking` (`id_tracking`),
-  KEY `FK_users_countries_states` (`id_countries_states`),
-  KEY `FK_users_resellers` (`id_agents`) USING BTREE,
-  KEY `FK_users_resellers_2` (`id_resellers`),
+  KEY `FK_users_stores` (`id_stores`),
   CONSTRAINT `FK_users_countries` FOREIGN KEY (`id_countries`) REFERENCES `countries` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `FK_users_countries_states` FOREIGN KEY (`id_countries_states`) REFERENCES `countries_states` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `FK_users_resellers` FOREIGN KEY (`id_agents`) REFERENCES `agents` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `FK_users_resellers_2` FOREIGN KEY (`id_resellers`) REFERENCES `resellers` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `FK_users_tracking` FOREIGN KEY (`id_tracking`) REFERENCES `tracking` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  CONSTRAINT `FK_users_stores` FOREIGN KEY (`id_stores`) REFERENCES `stores` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- L’esportazione dei dati non era selezionata.
 
@@ -801,52 +783,6 @@ CREATE TABLE IF NOT EXISTS `users_keys` (
 ) ENGINE=InnoDB AUTO_INCREMENT=10532 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- L’esportazione dei dati non era selezionata.
-
--- Dump della struttura di trigger bottleup_clear.oauth_tokens_after_update
-SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO';
-DELIMITER //
-CREATE TRIGGER `bottleup_clear`.`oauth_tokens_after_update` AFTER UPDATE ON `oauth_tokens` FOR EACH ROW BEGIN
-	IF OLD.id_users IS NULL AND NEW.id_users IS NOT NULL THEN
-		UPDATE store_orders SET id_users = NEW.id_users, oauth_tokens_jti = NULL WHERE store_orders.oauth_tokens_jti = OLD.jti;
-	END IF; 
-END//
-DELIMITER ;
-SET SQL_MODE=@OLDTMP_SQL_MODE;
-
--- Dump della struttura di trigger bottleup_clear.store_products_before_update
-SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO';
-DELIMITER //
-CREATE TRIGGER `bottleup_clear`.`store_products_before_update` BEFORE UPDATE ON `store_products` FOR EACH ROW BEGIN
-
-	IF (NEW.availability_virtual IS NOT NULL AND NEW.availability_virtual < 0)
-	
-	THEN
-	
-		SET NEW.availability_virtual = 0;
-		
-	END IF;
-	
-		IF (NEW.availability_warehouse IS NOT NULL AND NEW.availability_warehouse < 0)
-	
-	THEN
-	
-		SET NEW.availability_warehouse = 0;
-		
-	END IF;
-	
-
-	IF (NEW.availability_warehouse IS NOT NULL AND NEW.availability_warehouse <= 0 AND NEW.availability_virtual IS NOT NULL AND NEW.availability_virtual <= 0 AND (NEW.status = 'on_sale' OR OLD.status = 'on_sale'))
-	
-	THEN
-	
-		SET NEW.status = 'out_of_stock';
-	
-	END IF;
-	
-
-END//
-DELIMITER ;
-SET SQL_MODE=@OLDTMP_SQL_MODE;
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

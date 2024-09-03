@@ -9,6 +9,8 @@ use Kodelines\Helpers\Cache;
 
 class Countries {
 
+  //TODO: mettere in cache tutto e get, getByShortName e getShortName vanno a controllare su array cache
+
   /**
    * Torna singola nazione
    *
