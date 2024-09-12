@@ -13,8 +13,6 @@ return function (Slim $app) {
 
     //$app->addErrorMiddleware(dev(),dev(),dev());
 
-    $app->add(new CartMiddleware);
-
     $app->add(new JwtAuthentication([
         "secret" => Client::getKids(),
         "secure" => Domain::isSecure(),

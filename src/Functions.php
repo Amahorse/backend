@@ -1,8 +1,21 @@
 <?php
 
-namespace Kodelines;
-
 use Kodelines\Db;
+
+if (!function_exists('config')) {
+  /**
+   * Shortcut to get a config group or a single group from loaded config vars
+   *
+   * @method config
+   * @param  string         $group   Config group name (key of json), in case of .php config is the name of the php file (no extension)
+   * @param  string|boolean $value   Optional config group value
+   * @return mixed            False if not found, array if config group or value if config value
+   */
+  function config(string $type, string|bool $value = false): mixed {
+    return !empty($_ENV['config']) ? $_ENV['config']->get($type, $value) : false;
+  }
+}
+
 
 if (!function_exists('dev')) {
   /**
@@ -29,22 +42,6 @@ if (!function_exists('dump')) {
     die(var_dump($value));
   }
 }
-
-
-if (!function_exists('config')) {
-  /**
-   * Shortcut to get a config group or a single group from loaded config vars
-   *
-   * @method config
-   * @param  string         $group   Config group name (key of json), in case of .php config is the name of the php file (no extension)
-   * @param  string|boolean $value   Optional config group value
-   * @return mixed            False if not found, array if config group or value if config value
-   */
-  function config(string $type, string|bool $value = false): mixed {
-    return !empty($_ENV['config']) ? $_ENV['config']->get($type, $value) : false;
-  }
-}
-
 
 
 

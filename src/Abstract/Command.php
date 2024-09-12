@@ -11,14 +11,13 @@ declare(strict_types=1);
 
 namespace Kodelines\Abstract;
 
-use Kodelines\Interfaces\CommandInterface;
 use Context\Cli\Console;
 
 /**
  * Classe abstract perchè deve essere estensione dei controller che gli aggiungono questi metodi
  */
 
-abstract class Command implements CommandInterface
+abstract class Command 
 {
 
   /**

@@ -18,7 +18,7 @@ use Kodelines\Tools\Folder;
 
 
     //Carico route factory degli elementi base
-    $baseDir = _DIR_SRC_ . 'kodelines/Elements';
+    $baseDir = _DIR_ELEMENTS_;
 
     foreach(Folder::read($baseDir) as $element) {
 
@@ -53,9 +53,6 @@ return function (Slim $app) {
     $app->get('/config', \Kodelines\Controllers\ConfigController::class . ':get')->setName('config.get');
 
     $app->get('/currencies', \Kodelines\Controllers\CurrenciesController::class . ':sync')->setName('currencies.get');
-
-    $app->get('/translations/{language}', \Kodelines\Controllers\TranslationsController::class . ':get')->setName('translations.get');
-
     //DATI GEOGRAFICI
     $app->get('/countries', \Kodelines\Controllers\CountriesController::class . ':list')->setName('countries.list');
 

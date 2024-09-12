@@ -24,7 +24,7 @@ class TestController extends Controller
 
         Db::getInstance()->skipError = true;
 
-
+        return $this->response($response,true);
         if($args['type'] == 'store') {
             Store::start();
         } elseif($args['type'] == 'products') {

@@ -424,31 +424,7 @@ class Db
 
     $options = array();
 
-    foreach($fields as $key => $value) {
-
-      if(isset($translations[$value])) {
-        $text = $translations[$value];
-      } else {
-        $text = $value;
-      }
-
-      $options[$value] = $text;
-    }
-
-    if(!empty($extra)) {
-      foreach($extra as $key => $value) {
-
-        if(isset($translations[$value])) {
-          $text = $translations[$value];
-        } else {
-          $text = $value;
-        }
-
-        $options[$value] = $text;
-      }
-    }
-
-    return $options;
+    return $fields;
   }
 
 

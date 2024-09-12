@@ -51,16 +51,6 @@ abstract class Controller implements ControllerInterface
    */
   public ModelInterface $model;
 
-  /**
-   * Se settata true i valori enum o set delle api vengono tradotti e gli array convertiti come oggetti name -> value
-   * Può essere impostato come globale su configurazioni su tutto il controller o su singola funzione prima del return
-   * La conversione viene fatta alla response su funzione parse
-   *
-   * @var bool
-   */
-  public $translate = false;
-
-
 
   /**
    * Se false disabilita messaggi di notifica nella risposta json per il controller
@@ -83,12 +73,6 @@ abstract class Controller implements ControllerInterface
     */
   public $defaultFilters = [];
 
-  /**
-   * Traduzioni per API
-   *
-   * @var array
-   */
-  public $translations = [];
 
 
   /**
@@ -116,8 +100,6 @@ abstract class Controller implements ControllerInterface
     $this->container = $container;
 
     $this->data = App::getInstance()->requestData;
-
-    $this->translations = App::getInstance()->translations;
   
     //Se non è vuoto ma dichiarato in classe come stringa, la variabile modello diventa un oggetto di quella classe
     if(!empty($this->model)) {
@@ -131,11 +113,6 @@ abstract class Controller implements ControllerInterface
       }
     
     }
-
-    //TODO: questo e rimuovi hidden va fatto in base a $request xhr  
-    $this->translate = config('api','translate');
-    
-
 
   }
 

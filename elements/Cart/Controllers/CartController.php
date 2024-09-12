@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Elements\Cart\Controllers;
 
-use Kodelines\App;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\RequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
