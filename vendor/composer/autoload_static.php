@@ -12,12 +12,9 @@ class ComposerStaticInit3a9752aa4132d14384a1f5ed23d3344e
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
         '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
-        '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
         '9e4824c5afbdc1482b6025ce3d4dfde8' => __DIR__ . '/..' . '/league/csv/src/functions_include.php',
         'b33e3d135e5d9e47d845c576147bda89' => __DIR__ . '/..' . '/php-di/php-di/src/functions.php',
-        '779ceabb1efa4cf54bbaaea0730338ad' => __DIR__ . '/../..' . '/src/shortcuts/app.php',
-        '32f3c8a1375c6cb8256d6a03402f9ad4' => __DIR__ . '/../..' . '/src/shortcuts/db.php',
-        'ab4d22b57255f04cf21b4837d776238a' => __DIR__ . '/../..' . '/src/shortcuts/dir.php',
+        '691f0123187aafd14b497b66a95b75e4' => __DIR__ . '/../..' . '/src/Functions.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -33,8 +30,6 @@ class ComposerStaticInit3a9752aa4132d14384a1f5ed23d3344e
         'S' => 
         array (
             'Symfony\\Polyfill\\Php80\\' => 23,
-            'Symfony\\Polyfill\\Ctype\\' => 23,
-            'Symfony\\Component\\Yaml\\' => 23,
             'Slim\\Psr7\\' => 10,
             'Slim\\' => 5,
         ),
@@ -92,7 +87,6 @@ class ComposerStaticInit3a9752aa4132d14384a1f5ed23d3344e
         'C' => 
         array (
             'Cron\\' => 5,
-            'Context\\' => 8,
         ),
     );
 
@@ -114,14 +108,6 @@ class ComposerStaticInit3a9752aa4132d14384a1f5ed23d3344e
         'Symfony\\Polyfill\\Php80\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-php80',
-        ),
-        'Symfony\\Polyfill\\Ctype\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/symfony/polyfill-ctype',
-        ),
-        'Symfony\\Component\\Yaml\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/symfony/yaml',
         ),
         'Slim\\Psr7\\' => 
         array (
@@ -167,39 +153,39 @@ class ComposerStaticInit3a9752aa4132d14384a1f5ed23d3344e
         ),
         'Kodelines\\Tools\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/src/kodelines/Kodelines/Tools',
+            0 => __DIR__ . '/../..' . '/src/Tools',
         ),
         'Kodelines\\Oauth\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/src/kodelines/Kodelines/Oauth',
+            0 => __DIR__ . '/../..' . '/src/Oauth',
         ),
         'Kodelines\\Middleware\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/src/kodelines/Kodelines/Middleware',
+            0 => __DIR__ . '/../..' . '/src/Middleware',
         ),
         'Kodelines\\Libs\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/src/kodelines/Kodelines/Libs',
+            0 => __DIR__ . '/../..' . '/src/Libs',
         ),
         'Kodelines\\Interfaces\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/src/kodelines/Kodelines/Interfaces',
+            0 => __DIR__ . '/../..' . '/src/Interfaces',
         ),
         'Kodelines\\Helpers\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/src/kodelines/Kodelines/Helpers',
+            0 => __DIR__ . '/../..' . '/src/Helpers',
         ),
         'Kodelines\\Exception\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/src/kodelines/Kodelines/Exception',
+            0 => __DIR__ . '/../..' . '/src/Exception',
         ),
         'Kodelines\\Abstract\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/src/kodelines/Kodelines/Abstract',
+            0 => __DIR__ . '/../..' . '/src/Abstract',
         ),
         'Kodelines\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/src/kodelines/Framework',
+            0 => __DIR__ . '/../..' . '/src',
         ),
         'Invoker\\' => 
         array (
@@ -235,7 +221,7 @@ class ComposerStaticInit3a9752aa4132d14384a1f5ed23d3344e
         ),
         'Elements\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/src/kodelines/Elements',
+            0 => __DIR__ . '/../..' . '/elements',
         ),
         'DI\\' => 
         array (
@@ -244,10 +230,6 @@ class ComposerStaticInit3a9752aa4132d14384a1f5ed23d3344e
         'Cron\\' => 
         array (
             0 => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron',
-        ),
-        'Context\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/src/kodelines/Context',
         ),
     );
 

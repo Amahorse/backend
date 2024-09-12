@@ -11,10 +11,7 @@ return array(
     '37a3dc5111fe8f707ab4c132ef1dbc62' => $vendorDir . '/guzzlehttp/guzzle/src/functions_include.php',
     'a4a119a56e50fbb293281d9a48007e0e' => $vendorDir . '/symfony/polyfill-php80/bootstrap.php',
     '253c157292f75eb38082b5acb06f3f01' => $vendorDir . '/nikic/fast-route/src/functions.php',
-    '320cde22f66dd4f5d3fd621d3e88b98f' => $vendorDir . '/symfony/polyfill-ctype/bootstrap.php',
     '9e4824c5afbdc1482b6025ce3d4dfde8' => $vendorDir . '/league/csv/src/functions_include.php',
     'b33e3d135e5d9e47d845c576147bda89' => $vendorDir . '/php-di/php-di/src/functions.php',
-    '779ceabb1efa4cf54bbaaea0730338ad' => $baseDir . '/src/shortcuts/app.php',
-    '32f3c8a1375c6cb8256d6a03402f9ad4' => $baseDir . '/src/shortcuts/db.php',
-    'ab4d22b57255f04cf21b4837d776238a' => $baseDir . '/src/shortcuts/dir.php',
+    '691f0123187aafd14b497b66a95b75e4' => $baseDir . '/src/Functions.php',
 );

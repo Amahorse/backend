@@ -14,14 +14,8 @@ desktop.ini
 **/*.cache
 **/*.log
 
-# Don't track temp and logs cache files of app
-cache/*.*
-cache/**/*.*
-cache/index.php
-
-temp/*.*
-temp/**/*.*
-!temp/index.php
+var/**/*.*
+!var/**/index.php
 
 # Don't track apps configs files
 config/config.php
@@ -35,4 +29,3 @@ public/cdn/**/*.*
 
 #Custom
 .idea
-

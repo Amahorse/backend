@@ -1,22 +1,19 @@
 {    
 "autoload": {
         "files": [
-            "./src/shortcuts/app.php",
-            "./src/shortcuts/db.php",
-            "./src/shortcuts/dir.php"
+            "./src/Functions.php"
         ],
         "psr-4": {
-            "Kodelines\\": "./src/kodelines/Framework/",
-            "Kodelines\\Middleware\\": "./src/kodelines/Kodelines/Middleware/",
-            "Kodelines\\Interfaces\\": "./src/kodelines/Kodelines/Interfaces/",
-            "Kodelines\\Tools\\": "./src/kodelines/Kodelines/Tools/",
-            "Kodelines\\Helpers\\": "./src/kodelines/Kodelines/Helpers/",
-            "Kodelines\\Exception\\": "./src/kodelines/Kodelines/Exception/",
-            "Kodelines\\Libs\\": "./src/kodelines/Kodelines/Libs/",
-            "Kodelines\\Abstract\\": "./src/kodelines/Kodelines/Abstract/",
-            "Kodelines\\Oauth\\": "./src/kodelines/Kodelines/Oauth/",
-            "Elements\\": "./src/kodelines/Elements/",
-            "Context\\": "./src/kodelines/Context/"
+            "Kodelines\\": "./src/",
+            "Kodelines\\Middleware\\": "./src/Middleware/",
+            "Kodelines\\Interfaces\\": "./src/Interfaces/",
+            "Kodelines\\Tools\\": "./src/Tools/",
+            "Kodelines\\Helpers\\": "./src/Helpers/",
+            "Kodelines\\Exception\\": "./src/Exception/",
+            "Kodelines\\Libs\\": "./src/Libs/",
+            "Kodelines\\Abstract\\": "./src/Abstract/",
+            "Kodelines\\Oauth\\": "./src/Oauth/",
+            "Elements\\": "./elements/"
         }
     },
     "require": {
@@ -27,7 +24,6 @@
         "guzzlehttp/guzzle": "^7.8",
         "league/csv": "^9.8",
         "peppeocchi/php-cron-scheduler": "^4.0",
-        "jimtools/jwt-auth": "^1.0",
-                "symfony/yaml": "^6.4"
+        "jimtools/jwt-auth": "^1.0"
     }
 }
