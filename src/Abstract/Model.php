@@ -96,17 +96,6 @@ abstract class Model implements ModelInterface
    */
   public $object = [];
 
-  /**
-   * Nome file della view del front end dove viene mostrato l'oggetto di questa classe, serve per generare i meta tag dinamici
-   *
-   * @var string
-   */
-  public $view;
-
-  /**
-   * Configurazioni default per meta, vedere la classe CMS\Meta $defaults per valori possibili
-   */
-  public $meta = [];
   
 
   /**
@@ -392,17 +381,6 @@ abstract class Model implements ModelInterface
   }
 
 
-  /**
-   * Serve a fare get normale ma fa sotto query di elementi
-   *
-   * @method get
-   * @param  $id    id elemento
-   * @return array|false
-   */
-  public function fullGet(int $id, $filters = []): array|false
-  {
-    return $this->get($id,$filters);
-  }
 
   /**
    * Get a Single row by slug (only for tables with _lang)
@@ -448,7 +426,14 @@ abstract class Model implements ModelInterface
    * @return array
    */
   public function fullList($filters = []):array {
-    return $this->list($filters);
+
+    $data = [];
+
+    foreach($this->list($filters) as $key => $value) {
+      $data[] = $this->fullGet($value['id']);
+    }
+
+    return $data;
   }
 
 
@@ -851,9 +836,9 @@ abstract class Model implements ModelInterface
    * @param integer $id
    * @return boolean|array
    */
-  public function getAll(int $id): bool|array {
+  public function fullGet(int $id, $filters = []): false|array {
 
-    if(!$object = $this->get($id)) {
+    if(!$object = $this->get($id,$filters)) {
       return false;
     }
 

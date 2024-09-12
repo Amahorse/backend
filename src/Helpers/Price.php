@@ -51,52 +51,6 @@ class Price {
 
 
   /**
-   * Mostra prezzo convertito e con simbolo valuta
-   *
-   * @param mixed $price
-   * @return string
-   */
-  public function display(mixed $values, string $type = 'original'):string {
-
-    if($type == 'original' && is_string($values)) {
-      $price = $values;
-    }
-   
-    if($type == 'total_price_final' && is_array($values)) {
-
-      if(config('store','price_display_taxes_excluded') == 1 && isset($values['total_price_final_taxes_excluded'])) {
-        $price = $values['total_price_final_taxes_excluded'];
-      }
-
-      if(config('store','price_display_taxes_excluded') == 0 && isset($values['total_price_final'])) {
-        $price = $values['total_price_final'];
-      }
-
-    }
-
-    if($type == 'total_price' && is_array($values)) {
-
-      if(config('store','price_display_taxes_excluded') == 1 && isset($values['total_price_taxes_excluded'])) {
-        $price = $values['total_price_taxes_excluded'];
-      }
-
-      if(config('store','price_display_taxes_excluded') == 0 && isset($values['total_to_pay'])) {
-        $price = $values['total_to_pay'];
-      }
-
-    }
-
-    if(!isset($price)) {
-      return 'n/a';
-    }
-
-
-    $price =  self::$currency . ' '  . self::toDecimal($price);
-
-    return $price;
-  }
-
-  /**
    * Converte prezzo in valuta locale corrente
    *
    * @param mixed $price
@@ -165,6 +119,7 @@ class Price {
     return $prices;
   }
 
+  //TODO: spostare su altra classe Bottle-Up
   /**
    * Ritorna l'importo della commissione pagamento
    *
