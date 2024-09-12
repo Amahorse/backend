@@ -12,6 +12,7 @@ use Elements\Categories\Import as Categories;
 use Elements\Brands\Import as Brands;
 use Elements\Store\Import as Store;
 use Elements\Users\Import as Users;
+use Elements\Store\Store as St;
 use Psr\Http\Message\RequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
@@ -22,6 +23,8 @@ class TestController extends Controller
     public function get(Request $request, Response $response, array $args) : Response
     {   
 
+
+        return $this->response($response,St::list());
         Db::getInstance()->skipError = true;
 
         return $this->response($response,true);

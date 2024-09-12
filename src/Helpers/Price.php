@@ -109,7 +109,7 @@ class Price {
         continue;
       }
 
-      if(Str::startsWith($key,'price_') || Str::startsWith($key,'total_')) {
+      if(Str::startsWith($key,'price_') || Str::startsWith($key,'total_') || Str::startsWith($key,'discount_')) {
 
         $prices[$key] = self::toDecimal($value);
       }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Elements\Store;
 
+use Kodelines\Abstract\Decorator;
 use Kodelines\Db;
 
 /**
@@ -11,7 +12,7 @@ use Kodelines\Db;
  * Se si instanzia una nuova classe store vanno settati a mano tutti i parametri
  */
 
-class Store  {
+class Store extends Decorator {
 
 
 

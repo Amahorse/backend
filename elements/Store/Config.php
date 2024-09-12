@@ -5,7 +5,7 @@ return
     [
         "type" => 'b2c',
         "id_resellers" => null,
-        "id_stores" => null,
+        "id_stores" => 3,
         "id_agents" => null,
         "id_countries" => null,
         "payment_commission_percentage" => 0.034,

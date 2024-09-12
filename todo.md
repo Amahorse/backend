@@ -3,14 +3,17 @@
 - cache standard
 - logger
 - config split elements
-- errori validator traduzione
+- errori validator senza traduzione
 
 
 
 
 
 
-- Importare model da bottle up per funzione getAll modificata
+- Inserire dati siti web clienti
+- Campi che servono a jack per excel
+- Campi che servono per decathlon
+- Definire campi nascosti e required per vari controller
 
 
 

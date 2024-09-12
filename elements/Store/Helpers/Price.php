@@ -26,9 +26,9 @@ class Price extends PriceCore  {
         "discount_contract_percentage" => 0.00,
         "discount_final_percentage" => 0.00,
         //Vari tipi di sconto,
-        "total_price",
-        "total_discount",
-        "total_to_pay"
+        "total_price" => 0.00,
+        "total_discount" => 0.00,
+        "total_to_pay" => 0.00
     );
         
 
@@ -66,14 +66,24 @@ class Price extends PriceCore  {
         $calculated['discount_percentage'] = $values['discount_contract_percentage'];
       }
 
-      $calculated['price_discount'] = Number::percentage($calculated['price'],$calculated['discount_percentage']);
+      if(!empty($calculated['discount_percentage'])) {
+        $calculated['price_discount'] = Number::percentage($calculated['price'],$calculated['discount_percentage']);
+      }
+
 
       $calculated["total_price"] = $calculated['price'] * $quantity;
 
-      $calculated["total_discount"] = Number::percentage($calculated['total_price'],$calculated['discount_percentage']);
+      $calculated["total_to_pay"] = $calculated['total_price'];
 
-      $calculated["total_to_pay"] = $calculated['total_price'] - $calculated['total_discount'];
+      
+      if(!empty($calculated['discount_percentage'])) {
 
+        $calculated["total_discount"] = Number::percentage($calculated['total_price'],$calculated['discount_percentage']);
+
+        $calculated["total_to_pay"] -= $calculated['total_discount'];
+
+      }
+     
       
       return Price::formatMultiple($calculated);
 
