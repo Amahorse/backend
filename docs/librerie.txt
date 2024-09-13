@@ -1,1 +1,0 @@
-Docs yaml: https://symfony.com/doc/current/components/yaml.html#what-is-it

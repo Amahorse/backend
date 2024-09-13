@@ -16,10 +16,9 @@ use Slim\Exception\HttpNotFoundException;
 use Slim\Exception\HttpMethodNotAllowedException;
 use Kodelines\Interfaces\ControllerInterface;
 use Kodelines\Interfaces\ModelInterface;
-use Kodelines\Tools\Str;
 use Kodelines\Tools\Json;
 use Kodelines\Tools\Query;
-use Psr\Container\ContainerInterface;
+use DI\Container;
 use Psr\Http\Message\RequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
@@ -78,9 +77,9 @@ abstract class Controller implements ControllerInterface
   /**
    * PSR7 container
    *
-   * @param ContainerInterface $container
+   * @param Container $container
    */
-  public ContainerInterface $container;
+  public Container $container;
 
   /**
    * Nome classe per trovare il Model corrispondente al Controller
@@ -93,13 +92,13 @@ abstract class Controller implements ControllerInterface
    * La richiesta viene processata dal container e dalla app principale nel middleware che ritorna dati fixati
    * e nell'array $this->data per risparmiare tutte le volte di recuperarli nel metodo PSR7 con le varie funzioni
    *
-   * @param ContainerInterface $container
+   * @param Container $container
    */
-  public function __construct(ContainerInterface $container) {
+  public function __construct(Container $container) {
 
     $this->container = $container;
 
-    $this->data = App::getInstance()->requestData;
+    $this->data = $this->container->get('requestData');
   
     //Se non è vuoto ma dichiarato in classe come stringa, la variabile modello diventa un oggetto di quella classe
     if(!empty($this->model)) {

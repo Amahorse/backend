@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Elements\Categories\Models;
 
 use Kodelines\Abstract\Model;
-use Kodelines\Oauth\Scope;
 
 class CategoriesModel extends Model {
 
@@ -14,10 +13,6 @@ class CategoriesModel extends Model {
   public $documents = 'categories';
 
   public $uploads = ['cover','icon_png'];
-
-  public $meta = [
-    'opengraph_type' => 'category'
-  ];
 
   public function query(array $filters = []):string
   {

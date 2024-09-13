@@ -14,6 +14,7 @@ use Kodelines\Tools\Str;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
+use DI\Container;
 use Slim\Psr7\Response;
 use Throwable;
 
@@ -35,6 +36,21 @@ class ApiMiddleware implements MiddlewareInterface
      * Contiene dati richiesta
      */
     public $data;
+
+    /**
+     * PSR7 container
+     *
+     * @param ContainerInterface $container
+     */
+    public Container $container;
+
+
+
+    public function __construct(Container $container) {
+
+        $this->container = $container;
+
+    }
 
     
     /**
@@ -70,9 +86,9 @@ class ApiMiddleware implements MiddlewareInterface
         }
 
         //Assegno valori richiesta alla app cosi sono sempre accessibili nell'interfaccia controller senza che venga estesa da questa classe
-        App::getInstance()->requestData = $this->fixData($this->data);
+        $this->container->set('requestData', $this->data);
 
-   
+
         try {
      
             $response = $handler->handle($request);

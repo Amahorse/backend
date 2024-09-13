@@ -1,6 +1,5 @@
 <?php
 
-use Elements\Cart\Middleware\CartMiddleware;
 use Slim\App as Slim;
 use Kodelines\Middleware\ApiMiddleware;
 use Tuupola\Middleware\JwtAuthentication;
@@ -33,7 +32,7 @@ return function (Slim $app) {
         "before" => function ($request, $arguments)  {
            
             try {
-              
+
                 //Istanzio nuovo oauth server con le variabili del token
                 new Server($request, $arguments);
 
@@ -55,7 +54,7 @@ return function (Slim $app) {
     ]));
 
 
-    $app->add(new ApiMiddleware);
+    $app->add(new ApiMiddleware($app->getContainer()));
 
     $app->addBodyParsingMiddleware();
 

@@ -40,12 +40,6 @@ class App
    */
   public $messages = [];
 
-  /**
-   * Var to store app request data from ApiMiddleware
-   *
-   * @var object|null
-   */
-  public $requestData = [];
 
 
   /**
