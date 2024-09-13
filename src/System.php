@@ -62,7 +62,7 @@ class System
     define('_FOLDER_VENDOR_',  'vendor/');
     define('_FOLDER_SRC_', 'src/');
     define('_FOLDER_VAR_', 'var/');
-    define('_FOLDER_ELEMENTS_', 'var/');
+    define('_FOLDER_ELEMENTS_', 'elements/');
     define('_FOLDER_PUBLIC_', 'public/');
     define('_FOLDER_CONFIG_', 'config/');
 

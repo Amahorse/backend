@@ -22,7 +22,9 @@ return function (Slim $app) {
                 ],
                 "ignore" => [
                     "/oauth/token",
-                    "/test"
+                    "/test",
+                    "/store",
+                    "/products"
                 ]
             ]),
             new Tuupola\Middleware\JwtAuthentication\RequestMethodRule([

@@ -93,6 +93,22 @@ abstract class Decorator {
     return $class;
   }
 
+  /**
+   * Get campi modello
+   *
+   * @param object $model
+   * @return array
+   */
+  public static function getFields(object $model):array {
+  
+    if(!empty($model->fields)) {
+      return $model->fields;
+    }
+
+    return [];
+
+  }
+
 
 }
 

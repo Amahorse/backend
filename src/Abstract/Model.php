@@ -993,22 +993,17 @@ abstract class Model implements ModelInterface
   /**
    * Importa campi per validazione e traduzione da un'altro modello e li aggiunge a quelli del modello corrente, che hanno comunque la priorità se duplicati
    *
-   * @param string $model
+   * @param object $model
    * @return void
    */
-  public function importFields(string $model):void {
+  public function importFields(object $model):void {
 
-    if(class_exists($model)) {
-     
-      $import = new $model; 
-    
-      if(!empty($import->fields)) {
-        $this->fields = array_merge($import->fields,$this->fields);
-      }
-
+    if(!empty($model->fields)) {
+      $this->fields = array_merge($model->fields,$this->fields);
     }
 
   }
+
 
 
 

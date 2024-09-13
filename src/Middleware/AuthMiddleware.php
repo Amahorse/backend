@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Kodelines\Middleware;
 
-use Kodelines\App;
 use Kodelines\Oauth\Scope;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
@@ -34,7 +33,7 @@ class AuthMiddleware implements MiddlewareInterface
      */
     public function __construct($args = [])
     {
-        
+        //TODO: Le scopes dei token sono array enum
         //di default gli scope sono su config
         $this->scopes = config('token','scopes');
 

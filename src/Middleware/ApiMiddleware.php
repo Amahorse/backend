@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Kodelines\Middleware;
 
 use DateTime;
-use Kodelines\App;
 use Kodelines\Log;
 use Kodelines\Helpers\Language;
 use Kodelines\Helpers\Locale;

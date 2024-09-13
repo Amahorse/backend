@@ -24,6 +24,7 @@ final class Factory
             // Register system routes
             (require __DIR__ . '/config/commands.php')($this->console);
 
+            //TODO: Register custom routes elements come nel caso di api
             //Custom Routes for context
             if(file_exists(_DIR_CONTEXT_ . 'commands.php')) {
                 (require _DIR_CONTEXT_ . '/commands.php')($this->console);
