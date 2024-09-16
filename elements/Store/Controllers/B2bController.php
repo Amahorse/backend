@@ -14,7 +14,7 @@ class B2bController extends Controller {
 
   public $defaultFilters = [
     'available_b2b' => 1,
-    'status' => 'on_sale'
+    'status' => ['on_sale','low_stock']
   ];
 
 

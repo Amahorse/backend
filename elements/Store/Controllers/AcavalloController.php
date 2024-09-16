@@ -14,7 +14,7 @@ class AcavalloController extends Controller {
 
   public $defaultFilters = [
     'available_b2c' => 1,
-    'status' => 'on_sale',
+    'status' => ['on_sale','low_stock'],
     'brand_code' => 'AC'
   ];
 

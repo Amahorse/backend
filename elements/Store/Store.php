@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Elements\Store;
 
 use Kodelines\Abstract\Decorator;
-use Elements\Store\Helpers\Price;
 use Kodelines\Db;
 
 /**
@@ -15,33 +14,6 @@ use Kodelines\Db;
 
 class Store extends Decorator {
 
-  public static function split(array $store):array {
-
-    $data = [];
-
-    $product = array_keys(self::getFields(new \Elements\Products\Models\ProductsModel));
-
-    $variant = array_keys(self::getFields(new \Elements\Store\Models\StoreModel));
-
-    foreach($store as $value) {
-
-      $value = array_merge($value,Price::calculate($value));
-      
-      if(!isset($data[$value['code']])) {
-
-        $data[$value['code']] = array_intersect_key($value, array_flip($product));
-
-        $data[$value['code']]['variants'] = [];
-
-      }
-
-      $data[$value['code']]['variants'][] = array_intersect_key($value, array_flip($variant));
-
-    }
-
-    return array_values($data);
-
-  }
 
   public static function getSkus():array {
 

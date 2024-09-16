@@ -301,31 +301,66 @@ abstract class Model implements ModelInterface
       
 
       //Applico filtro campo in base ai tipi database
-      if($this->fields[$field] == 'integer' || $this->fields[$field] == 'tinyint') {
+      if ($this->fields[$field] == 'integer' || $this->fields[$field] == 'tinyint') {
 
         //Filtri per id vuoti o uguali a 0 non vengolo applicati
-        if(Str::startsWith($field,'id') && empty($value)) {
+        if (Str::startsWith($field, 'id') && empty($value)) {
           continue;
         }
 
-
-        $query .= " AND ".$this->table.".".$field." ".$operator." " . (int)$value;
-
-      } elseif($this->fields[$field] == 'float') {
-
-        $query .= " AND ".$this->table.".".$field." ".$operator." " . (float)$value;
-
-      } elseif($this->fields[$field] == 'set') {
-
-        if($operator == '=') {
-          $query .= " AND FIND_IN_SET(".encode($value).",".$this->table.".".$field.") ";
+        if (is_array($value)) {
+          $query .= " AND (";
+          foreach ($value as $val) {
+        $query .= $this->table . "." . $field . " " . $operator . " " . (int)$val . " OR ";
+          }
+          $query = rtrim($query, " OR ") . ")";
         } else {
-          $query .= " AND NOT FIND_IN_SET(".encode($value).",".$this->table.".".$field.") ";
+          $query .= " AND " . $this->table . "." . $field . " " . $operator . " " . (int)$value;
+        }
+
+      } elseif ($this->fields[$field] == 'float') {
+
+        if (is_array($value)) {
+          $query .= " AND (";
+          foreach ($value as $val) {
+        $query .= $this->table . "." . $field . " " . $operator . " " . (float)$val . " OR ";
+          }
+          $query = rtrim($query, " OR ") . ")";
+        } else {
+          $query .= " AND " . $this->table . "." . $field . " " . $operator . " " . (float)$value;
+        }
+
+      } elseif ($this->fields[$field] == 'set') {
+
+        if (is_array($value)) {
+          $query .= " AND (";
+          foreach ($value as $val) {
+            if ($operator == '=') {
+              $query .= "FIND_IN_SET(" . encode($val) . "," . $this->table . "." . $field . ") OR ";
+            } else {
+              $query .= "NOT FIND_IN_SET(" . encode($val) . "," . $this->table . "." . $field . ") OR ";
+            }
+          }
+          $query = rtrim($query, " OR ") . ")";
+        } else {
+          if ($operator == '=') {
+            $query .= " AND FIND_IN_SET(" . encode($value) . "," . $this->table . "." . $field . ") ";
+          } else {
+            $query .= " AND NOT FIND_IN_SET(" . encode($value) . "," . $this->table . "." . $field . ") ";
+          }
         }
 
       } else {
-          
-        $query .= " AND ".$this->table.".".$field." ".$operator." " . encode($value);
+
+        if (is_array($value)) {
+          $query .= " AND (";
+          foreach ($value as $val) {
+              $query .= $this->table . "." . $field . " " . $operator . " " . encode($val) . " OR ";
+            }
+            $query = rtrim($query, " OR ") . ")";
+          } else {
+            $query .= " AND " . $this->table . "." . $field . " " . $operator . " " . encode($value);
+          }
       }
 
     }

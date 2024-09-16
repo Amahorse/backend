@@ -36,10 +36,13 @@ class StoreModel extends Model {
     
     $query = "SELECT 
       store_products.*,
+      store_products.id AS id_store_products,
       products.*,
+      stores.currency,
+      stores.taxes_included,
       brands.title AS brand,
       brands.code AS brand_code,
-      store_products_availability.availability_b2b AS availabilty,
+      CASE WHEN stores.type = 'b2b' THEN store_products_availability.availability_b2b ELSE store_products_availability.availability_b2c END AS availability,
       store_products_prices.price,
       store_products_discounts.discount_offer_percentage,";
 
@@ -56,14 +59,19 @@ class StoreModel extends Model {
       }
 
     $query .= 
-        "products_lang.*
+        "products_lang.*,
+        categories_lang.title AS category,
+        categories_lang.id_categories
         FROM store_products
           JOIN products ON store_products.id_products = products.id
           JOIN products_lang ON products_lang.id_products = products.id AND products_lang.language = ".encode($language)."
           JOIN store_products_availability ON store_products_availability.id_store_products = store_products.id
           JOIN store_products_prices ON store_products_prices.id_store_products = store_products.id AND store_products_prices.id_stores = ". id($id_stores) ."
+          JOIN stores ON stores.id = ". id($id_stores) ."
           LEFT JOIN brands ON brands.id = products.id_brands
           LEFT JOIN store_products_discounts ON store_products_discounts.id_store_products = store_products.id AND imported = 1
+          LEFT JOIN products_categories ON products_categories.id_products = products.id
+          LEFT JOIN categories_lang ON categories_lang.id_categories = products_categories.id_categories AND categories_lang.language = ".encode($language)."
         WHERE store_products.id IS NOT NULL ";
 
       if(!empty($filters['id_categories'])) {
@@ -76,6 +84,10 @@ class StoreModel extends Model {
 
       if(!empty($filters['brand_code'])) {
         $query .= " AND brands.code = ".encode($filters['brand_code']);
+      }
+
+      if(!empty($filters['code'])) {
+        $query .= " AND products.code = ".encode($filters['code']);
       }
       
       $query .= $this->applyFilters($filters); 

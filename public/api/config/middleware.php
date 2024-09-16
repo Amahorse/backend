@@ -24,6 +24,7 @@ return function (Slim $app) {
                     "/oauth/token",
                     "/test",
                     "/store",
+                    "/config",
                     "/products"
                 ]
             ]),

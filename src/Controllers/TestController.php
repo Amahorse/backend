@@ -23,7 +23,7 @@ class TestController extends Controller
     public function get(Request $request, Response $response, array $args) : Response
     {   
 
-
+        dump(phpinfo());
         return $this->response($response,St::list());
         Db::getInstance()->skipError = true;
 
