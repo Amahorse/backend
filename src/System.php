@@ -8,6 +8,11 @@ declare(strict_types=1);
 
 namespace Kodelines;
 
+use DI\ContainerBuilder;
+use Slim\App;
+use Psr\Container\ContainerInterface;
+use Slim\Factory\AppFactory;
+
 class System
 {
 
@@ -103,7 +108,42 @@ class System
 
     $_ENV['config'] = new Config();
 
+    $containerBuilder = new ContainerBuilder();
 
+    // Set up settings
+    $containerBuilder->addDefinitions([
+      'settings' => [
+          'addContentLengthHeader' => false,
+          'determineRouteBeforeAppMiddleware' => true
+      ],
+  
+      App::class => function (ContainerInterface $container) {
+  
+          $app = AppFactory::createFromContainer($container);
+  
+          if(config('app','cache') == true && !dev()) {
+  
+              $routeCollector = $app->getRouteCollector();
+          
+              $routeCollector->setCacheFile(_DIR_CACHE_ . 'api.routes.php');
+  
+          }      
+  
+          // Register routes
+          (require getcwd() . '/config/routes.php')($app);
+  
+          // Register middleware
+          (require  getcwd() . '/config/middleware.php')($app);
+  
+  
+          return $app;
+        }
+      ]);
+    
+    // Build PHP-DI Container instance
+    $container = $containerBuilder->build();
+    
+    return $container->get(App::class)->run();
   }
   
 }

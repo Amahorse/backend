@@ -9,7 +9,7 @@ use Kodelines\Oauth\Client;
 use Kodelines\Tools\Domain;
 
 return function (Slim $app) {
-
+    //TODO: capire esattament cosa fa e ripristinare
     //$app->addErrorMiddleware(dev(),dev(),dev());
 
     $app->add(new JwtAuthentication([
@@ -50,7 +50,7 @@ return function (Slim $app) {
             
         },
         "error" => function ($response, $arguments) {
-         
+  
             return $response->withStatus(401);
    
         }

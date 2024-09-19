@@ -18,7 +18,11 @@
 
 
 
-
+SERVER:
+- Crerare elastic IP
+- Creare cluster Elsticache su DB
+- Volume condiviso e backup
+- Backup S3
 
 
 

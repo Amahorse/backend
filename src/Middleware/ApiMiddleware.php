@@ -23,13 +23,6 @@ use Throwable;
 class ApiMiddleware implements MiddlewareInterface
 {
 
-    /**
-     * Contine Xname per gli headers in lettura e scrittura 
-     *
-     * @var [type]
-     */
-    private $Xname;
-
 
     /**
      * Contiene dati richiesta
@@ -61,17 +54,16 @@ class ApiMiddleware implements MiddlewareInterface
     public function process(Request $request, RequestHandler $handler): Response
     {
 
-        //Setto valori lingua e locale dagli header
-        $this->Xname = config('api','xname');
+
 
         //TODO: il locale e la lingua di default possono venire fuori anche dal client (store)
 
 
         //Build locale header
-        define('_APP_LOCALE_',Locale::build($request->getHeaderLine($this->Xname."Locale")));
+        define('_APP_LOCALE_',Locale::build($request->getHeaderLine("X-Locale")));
 
         //Build lingua header
-        define('_APP_LANGUAGE_',Language::build($request->getHeaderLine($this->Xname."Language")));
+        define('_APP_LANGUAGE_',Language::build($request->getHeaderLine("X-Language")));
 
         if($request->getMethod() == 'GET' && !empty($_GET)) {
             $this->data = $_GET;
@@ -123,15 +115,15 @@ class ApiMiddleware implements MiddlewareInterface
     public function allowedHeaders(): string {  
 
         $headers= [
-            $this->Xname."Language",
-            $this->Xname."Domain",
-            $this->Xname."Locale",
-            $this->Xname."ClientType",
-            $this->Xname."IdResellers",
-            $this->Xname."IdStores",
-            $this->Xname."IdAgents",
-            $this->Xname."IdCountries",
-            $this->Xname."IdCart"
+            "X-Language",
+            "X-Domain",
+            "X-Locale",
+            "X-ClientType",
+            "X-IdResellers",
+            "X-IdStores",
+            "X-IdAgents",
+            "X-IdCountries",
+            "X-IdCart"
         ];
 
         return implode(',',$headers);

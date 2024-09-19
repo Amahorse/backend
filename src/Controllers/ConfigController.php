@@ -7,7 +7,6 @@ namespace Kodelines\Controllers;
 
 use Kodelines\App;
 use Kodelines\Abstract\Controller;
-use Kodelines\Helpers\Locale;
 use Psr\Http\Message\RequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
@@ -17,6 +16,8 @@ class ConfigController extends Controller
 
     public function get(Request $request, Response $response, array $args) : Response
     {   
+
+        dump('aaaa');
         //TODO: questo non è x bu in teoria
         if($domainHeader = $request->getHeaderLine("X-Bu-Domain")) {
             App::getInstance()->domain = $domainHeader;

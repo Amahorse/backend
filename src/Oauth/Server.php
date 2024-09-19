@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Kodelines\Oauth;
 
 use Kodelines\App;
-use Kodelines\Helpers\Locale;
 use Elements\Stores\Stores;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Exception\HttpForbiddenException;
@@ -14,13 +13,6 @@ use Slim\Exception\HttpUnauthorizedException;
 class Server
 {
 
-
-    /**
-     * Contine Xname per gli headers in lettura e scrittura 
-     *
-     * @var [type]
-     */
-    private $Xname;
 
 
     /**
@@ -32,7 +24,7 @@ class Server
      * Costruisce parametri oauth server in base a 
      */
     public function __construct(Request $request, array $arguments) {
-
+        dump('aaaa');
         /**
          * Definisco il token inviato come costante
          */
@@ -48,10 +40,6 @@ class Server
          */
         define('_OAUTH_CLIENT_ID_',$arguments['decoded']['aud']);
 
-        /**
-         * Prefisso api x-name
-         */
-        $this->Xname = config('api','xname');
 
 
         /**
@@ -106,7 +94,7 @@ class Server
         } else {
 
             //ID STORE su header ha minore priorità rispetto a quello del token
-            if((App::getInstance()->clientHeader = $request->getHeaderLine($this->Xname."IdStores")) && App::getInstance()->clientHeader !== 'false' && !empty(id(App::getInstance()->clientHeader))) {
+            if((App::getInstance()->clientHeader = $request->getHeaderLine("X-IdStores")) && App::getInstance()->clientHeader !== 'false' && !empty(id(App::getInstance()->clientHeader))) {
                         
                 define('_ID_STORES_',id(App::getInstance()->clientHeader));
 
@@ -133,7 +121,7 @@ class Server
          **/
 
         //CLIENT TYPE B2C B2B HORECA
-        if(($clientHeader = $request->getHeaderLine($this->Xname."ClientType"))  && !empty($clientHeader)) {
+        if(($clientHeader = $request->getHeaderLine("X-ClientType"))  && !empty($clientHeader)) {
             
             define('_CLIENT_TYPE_',$clientHeader);
 
@@ -153,7 +141,7 @@ class Server
       
 
         //ID RESELLER
-        if(($resellerHeader = $request->getHeaderLine($this->Xname."IdResellers")) && $resellerHeader !== 'false' && !empty(id($resellerHeader))) { 
+        if(($resellerHeader = $request->getHeaderLine("X-IdResellers")) && $resellerHeader !== 'false' && !empty(id($resellerHeader))) { 
 
             define('_ID_RESELLERS_',id($resellerHeader));
 
@@ -171,7 +159,7 @@ class Server
         }
 
         //ID AGENTE
-        if(($agentHeader = $request->getHeaderLine($this->Xname."IdAgents")) && $agentHeader !== 'false'  && !empty(id($agentHeader))) {
+        if(($agentHeader = $request->getHeaderLine("X-IdAgents")) && $agentHeader !== 'false'  && !empty(id($agentHeader))) {
 
             define('_ID_AGENTS_',id($agentHeader));
 
@@ -191,7 +179,7 @@ class Server
         
 
         //ID NAZIONE
-        if(($countryHeader = $request->getHeaderLine($this->Xname."IdCountries")) && $countryHeader !== 'false' && !empty(id($countryHeader))) {
+        if(($countryHeader = $request->getHeaderLine("X-IdCountries")) && $countryHeader !== 'false' && !empty(id($countryHeader))) {
            
             define('_ID_COUNTRIES_',id($countryHeader));
             

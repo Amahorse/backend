@@ -125,9 +125,6 @@ class Config
                     "timezone" => "America/Los_Angeles"
                 ],
             ],
-            "api" => [
-                "xname" => "X-"
-            ],
             "token" => [
                 "expire_time" => "24 hours",
                 "identifier" => "email",

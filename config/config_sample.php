@@ -23,9 +23,6 @@ return [
         "language" => "it",
         "locale" => "IT"
     ],
-    "api" => [
-        "xname" => "X-Am-"
-    ],
     "store" => [
         "id_stores" => 3,
     ],
