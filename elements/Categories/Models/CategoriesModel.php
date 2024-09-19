@@ -17,7 +17,7 @@ class CategoriesModel extends Model {
   public function query(array $filters = []):string
   {
 
-    $language = !empty($filters['language']) ? $filters['language'] : language();
+    $language = !empty($filters['language']) ? $filters['language'] : _APP_LANGUAGE_;
 
  
     $query = "

@@ -34,24 +34,6 @@ class Client
     return '127.0.0.1';
   }
 
-
-
-	/**
-	 * Get current browser language lowercase and 2chars
-	 *
-	 * @method language
-	 * @return string|false
-	 */
-	public static function language(): string|false {
-
-		if(empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
-			return false;
-		}
-
-		return mb_strtolower(mb_substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2));
-	}
-
-
   
   /**
    * Ritorna origine della chiamata api o indirizzo server

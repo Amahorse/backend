@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Kodelines\Helpers;
 
-
 use Kodelines\Error;
 
 class Language
@@ -15,24 +14,17 @@ class Language
    * @param string|bool $language
    * @return string|Error
    */
-  public static function build(string|bool $language = false): string|Error
+  public static function build(string|bool $language = false): string
   {
     // Se la lingua non è specificata, utilizza la lingua di default
-    if (is_bool($language)) {
+    if(!$language) {
       $language = config('default', 'language');
     }
 
 
     if (!self::isActive($language)) {
-      throw new Error('La lingua ' . $language . ' non è attiva');
+      throw new Error('Language "' . $language . '" is not active');
     }
-
-    $_ENV['language'] = $language;
-
-    // Aggiungi file di traduzione generale all'array della lingua dopo aver assegnato la lingua all'istanza singleton dell'app
-
-    // TODO: forse non serve
-    // Translations::addFile('general');
 
     return $language;
   }

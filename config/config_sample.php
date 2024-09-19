@@ -21,7 +21,7 @@ return [
     "default" => [
         "id_countries" => 380,
         "language" => "it",
-        "locale" => "it-IT"
+        "locale" => "IT"
     ],
     "api" => [
         "xname" => "X-Am-"

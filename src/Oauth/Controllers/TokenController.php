@@ -5,7 +5,6 @@ declare(strict_types=1);
 
 namespace Kodelines\Oauth\Controllers;
 
-use Kodelines\Helpers\Cookie;
 use Kodelines\Oauth\Token;
 use Kodelines\Abstract\Controller;
 use Slim\Exception\HttpBadRequestException;
@@ -74,28 +73,5 @@ class TokenController extends Controller
         return $this->response($response,$token);
     }
 
-    /**
-     * TODO: accrocco per front and per recuperare cookie settato da backend
-     *
-     * @param Request $request
-     * @param Response $response
-     * @param array $args
-     * @return Response
-     */
-    public function localStorageConvert(Request $request, Response $response) : Response
-    {        
-
-        if(!$cookie = Cookie::getInstance()->get('token')) {
-          return $this->response($response,true);
-        }
-
-        if(!$cookie = json_decode(base64_decode($cookie),true)) {
-          return $this->response($response,true);
-        }
-
-        Cookie::getInstance()->delete('token');   
-
-        return $this->response($response,$cookie);
-    }
 
 }

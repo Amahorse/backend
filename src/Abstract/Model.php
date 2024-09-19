@@ -166,7 +166,7 @@ abstract class Model implements ModelInterface
       if (!empty($filters['lang'])) {
         $language = $filters['lang'];
       } else {
-        $language = language();
+        $language = _APP_LANGUAGE_;
       }
 
       $query = "SELECT " . $this->table . ".*," . $this->table . "_lang.* FROM " . $this->table . " LEFT JOIN " . $this->table . "_lang ON " . $this->table . ".id = " . $this->table . "_lang.id_" . $this->table . " AND " . $this->table . "_lang.language = " . encode($language);
@@ -208,7 +208,7 @@ abstract class Model implements ModelInterface
       //Prima controllo multilingua perchè sennò muore su array_key_exists sotto
       if($this->multilanguage) {
 
-        $language = !empty($filters['language']) ? $filters['language'] : language();
+        $language = !empty($filters['language']) ? $filters['language'] : _APP_LANGUAGE_;
 
         if($field == 'slug' && $value === true) {
           $query .= " AND ".$this->table."_lang.slug IS NOT NULL AND  ".$this->table."_lang.language = " . encode($language);

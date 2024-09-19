@@ -290,7 +290,7 @@ class Mailer {
   	$insert['data'] = base64_encode(serialize($values));
 
   	if(!$language) {
-  		$insert['language'] = language();
+  		$insert['language'] = _APP_LANGUAGE_;
   	} else {
   		$insert['language'] = $language;
   	}

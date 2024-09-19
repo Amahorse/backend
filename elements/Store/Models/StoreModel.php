@@ -25,7 +25,7 @@ class StoreModel extends Model {
 
   public function query($filters = []):string {
 
-    $language = !empty($filters['language']) ? $filters['language'] : language();
+    $language = !empty($filters['language']) ? $filters['language'] : _APP_LANGUAGE_;
 
     if(user('id_stores')) {
       $id_stores = user('id_stores');

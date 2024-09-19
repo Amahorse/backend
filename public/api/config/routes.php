@@ -71,12 +71,7 @@ return function (Slim $app) {
 
     $app->post('/oauth/token', \Kodelines\Oauth\Controllers\TokenController::class . ':refresh')->setName('oauth.refresh');
 
-    //TODO: accrocco per prendere token settato da cookie in middleware
-    $app->get('/oauth/localstorageconvert', \Kodelines\Oauth\Controllers\TokenController::class . ':localStorageConvert')->setName('oauth.localStorageConvert');
-
     $app->post('/oauth/login', \Kodelines\Oauth\Controllers\UserController::class . ':login')->setName('oauth.login');
-
-    $app->post('/oauth/register', \Kodelines\Oauth\Controllers\UserController::class . ':register')->setName('oauth.register');
 
     $app->post('/oauth/logout', \Kodelines\Oauth\Controllers\UserController::class . ':logout')->setName('oauth.logout');
 

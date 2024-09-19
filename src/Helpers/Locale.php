@@ -19,6 +19,16 @@ class Locale
    */
   public static $locales = array();
 
+
+  /**
+   * Locale attualmente buildato
+   *
+   * @var array
+   */
+  public static $current = array();
+
+
+
   /**
    * Ritorna un array di traduzioni per lingua corrente o specificata
    * Serve di passare le config opzionale come secondo parametro perchè gli serve la cartella custom dei json delle conversioni prima di fare il build delle config su Config.php
@@ -27,14 +37,24 @@ class Locale
    * @param array  $config
    * @return array
    */
-  public static function build(string $locale, $config = []):array {
+  public static function build(string|bool $locale):string {
 
 
-    //Se non passata la lingua chiamo funzione detect che la riconosce
+    // Se la lingua non è specificata, utilizza la lingua di default
+    if(!$locale) {
+      $locale = config('default', 'locale');
+    }
+
+
+    //Chiamo sempre prima is active cosi da avere i locale caricati su self::$locales
     if(!self::isActive($locale)) {
       throw new Error('Locale '.$locale.' is not active');
     }
 
+    self::$current = self::locales()[$locale];
+
+    //TODO: valuta su database e cron per aggiornare 
+    /*
     if(!empty($config) && !empty($config['dir']) && !empty($config['dir']['uploads'])) {
       Currencies::$directory = $config['dir']['uploads'];
     } 
@@ -48,17 +68,15 @@ class Locale
     Price::$conversionRate = $values['currency']; 
 
     Price::$conversionRate = (float)Currencies::getConversionRate(Price::$databaseCurrency,$values['currency']); 
+    */
 
     //Set App Timezone
-    date_default_timezone_set($values['timezone']);
+    date_default_timezone_set(self::$current['timezone']);
     
     //Seto app locale in base a chiave configurazioni, cerca i vari locale in array dentro configurazioni app
-    setlocale(LC_ALL, $locale . '.utf8');
-
-    App::getInstance()->locale = $values;
+    setlocale(LC_ALL, self::$current['lcid'] . '.utf8');
     
-    return $values;
-
+    return $locale;
 
   }
 
@@ -70,10 +88,8 @@ class Locale
    * @return boolean
    */
   public static function isActive(string $locale): bool {
-
-    self::$locales = require(_DIR_CONFIG_ . 'locale.php');
  
-    if(is_array(self::$locales) && array_key_exists($locale,self::$locales)) {
+    if(is_array(self::locales()) && array_key_exists($locale,self::locales())) {
       return true;
     }
 
@@ -81,6 +97,14 @@ class Locale
   }
 
 
+  public static function locales():array {
+
+    if(empty(self::$locales)) {
+      self::$locales = config('locales');
+    }
+
+    return self::$locales;
+  }
 
 
 }

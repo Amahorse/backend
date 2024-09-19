@@ -89,7 +89,7 @@ class Config
                 "id_countries" => 380,
                 "language" => "it",
                 "currency" => "EUR",
-                "locale" => "it-IT",
+                "locale" => "IT",
                 "scope" => "provisional", //Scope di default a registrazione nuovo utente
             ],
             "db" => [ //Necessari al funzionamento del db
@@ -98,6 +98,32 @@ class Config
                 "pass" => null,
                 "charset" => null,
                 "name" => null
+            ],
+            "locales" => [
+                "IT" =>[
+                    "lcid" => "it-IT",
+                    "currency" => "EUR",
+                    "currency_symbol" => "€",
+                    "time_format" => "H:i",
+                    "date_format" => "d-m-Y",
+                    "timezone" => "Europe/Rome"
+                ],
+                "CH" => [
+                    "lcid" => "de-CH",    
+                    "currency" => "CHF",
+                    "currency_symbol" => "CHF",
+                    "time_format" => "H:i",
+                    "date_format" => "d-m-Y",
+                    "timezone" => "Europe/Rome"
+                ],
+                "US" => [
+                    "lcid" => "en-US",   
+                    "currency" => "USD",
+                    "currency_symbol" => "$",
+                    "time_format" => "H:i",
+                    "date_format" => "Y-m-d",
+                    "timezone" => "America/Los_Angeles"
+                ],
             ],
             "api" => [
                 "xname" => "X-"
@@ -198,13 +224,6 @@ class Config
      
         //Se non faccio questo da errore per il config 
 
-
-        if(!empty($this->values['store']['locale'])) {
-            $this->values['locale'] = Locale::build($this->values['store']['locale'],$this->values);
-        } else {
-            $this->values['locale'] = Locale::build($this->values['default']['locale'],$this->values);
-        }
-
         return $this;
     }
 
@@ -243,9 +262,6 @@ class Config
     {
 
         if (!isset($this->values[$group])) {
-
-
-
             return false;
         }
 

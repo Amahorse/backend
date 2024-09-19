@@ -33,7 +33,7 @@ class Tracking extends Decorator
     //TODO: passati a modalità solo api, il dominio è preso da header CMS
     $tracking = [
       'oauth_tokens_jti' => _OAUTH_TOKEN_JTI_,
-      'language' => language(),
+      'language' => _APP_LANGUAGE_,
       'ref' => _CONTEXT_,
       'domain' => Domain::current()
     ];

@@ -30,6 +30,8 @@ class Factory implements FactoryInterface
 
     $app->post('/users/activation', \Elements\Users\Controllers\UsersController::class . ':sendActivation')->setName('users.activation');
 
+    $app->post('/users/register', \Elements\Users\Controllers\UsersController::class . ':register')->setName('user.register');
+
     //Backend
     $app->group('', function (RouteCollectorProxy $api) use ($app) {
 

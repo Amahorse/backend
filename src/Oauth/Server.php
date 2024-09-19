@@ -125,18 +125,6 @@ class Server
 
         }
 
-        //Il locale dello store sovrascrive quello di default
-        if(isset(App::getInstance()->client['locale'])) {
-
-            $locale = Locale::build(App::getInstance()->client['locale']);
-
-            App::getInstance()->config->values['locale'] = $locale;
-    
-            App::getInstance()->config->values['store'] = array_merge(App::getInstance()->config->values['store'],App::getInstance()->client);
-
-        }
-
-
      
 
         /** 

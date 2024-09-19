@@ -32,7 +32,7 @@ class StoresModel extends Model {
     if (!empty($filters['lang'])) {
       $language = $filters['lang'];
     } else {
-      $language = language();
+      $language = _APP_LANGUAGE_;
     }
 
     $query = "

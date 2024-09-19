@@ -63,20 +63,15 @@ class ApiMiddleware implements MiddlewareInterface
 
         //Setto valori lingua e locale dagli header
         $this->Xname = config('api','xname');
-       
 
-        //Controllo se c'è locale su header, altrimenti faccio build pulito che prende il default
-        if($localeHeader = $request->getHeaderLine($this->Xname."Locale")) {
-            Locale::build($localeHeader);
-        } 
+        //TODO: il locale e la lingua di default possono venire fuori anche dal client (store)
 
-        //Controllo se c'è lingua su header, altrimenti faccio build pulito che prende il default o l'automatico
-        if($langHeader = $request->getHeaderLine($this->Xname."Language")) {    
-            Language::build($langHeader);
-        } else {
-            //Nel contesto api pubbliche buildo sempre quella di default se non passato header, se sono api interne invece faccio i controlli normali in srssione
-            Language::build(config('default','language'));      
-        }
+
+        //Build locale header
+        define('_APP_LOCALE_',Locale::build($request->getHeaderLine($this->Xname."Locale")));
+
+        //Build lingua header
+        define('_APP_LANGUAGE_',Language::build($request->getHeaderLine($this->Xname."Language")));
 
         if($request->getMethod() == 'GET' && !empty($_GET)) {
             $this->data = $_GET;

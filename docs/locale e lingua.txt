@@ -1,0 +1,13 @@
+La lingua non è legata al locale in quanto si vorrebbero poter vedere cose in italiano con il locale americano, lingua + locale definisce potenzialmente un url di applicazione tipo www.sito.com/it-IT invece che solo /it
+
+it-IT = lingua italiano locale italia
+en-IT = lingua inglese locale italia
+it-US lingua italia locale usa
+en-US lingua inglese locale usa
+
+e cosi via...
+
+Gli lcid generati non sarebbero quelli standard (https://www.science.co.il/language/Locale-codes.php), ogni locale comunque ha un lcid di default per venire impostato su php per i timezone e le lingue varie che sono di default quelli standard
+altrimenti darebbe errore. Per fare una cosa ottima andrebbe fatto un build dei locale dopo il settaggio della lingua e concatenarlo nella funzione di Locale::build() per vedere se esiste un lcid corrispondente standard e settarlo su PHP
+
+NB: questa gestione è stata fatta per avere maggiore flessibilità rispetto alle funzioni standard e non dover avere file di lingua per ogni locale ma poterli variare in base al frontend

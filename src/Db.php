@@ -416,13 +416,9 @@ class Db
    */
   public static function enumOptions(string $table, string $field,$extra = []): array {
 
-
-
     if(!$fields = self::getEnum($table,$field)) {
       return array();
     }
-
-    $options = array();
 
     return $fields;
   }

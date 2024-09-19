@@ -44,20 +44,6 @@ if (!function_exists('dump')) {
 }
 
 
-
-if (!function_exists('language')) {
-  /**
-   * Shortcut to get app language
-   *
-   * @return string
-   */
-  function language(): string
-  {
-    return $_ENV['language'];
-  }
-}
-
-
 if (!function_exists('user')) {
   /**
    * Ritorna valori utente in sessione, può tornare false se utente non loggato, tutto l'array di valori o il singolo specificato

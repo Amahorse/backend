@@ -26,12 +26,6 @@ class App
    */
   public $address;
 
-  /** 
-   * App language
-   */
-  public $language;
-
-
 
   /**
    * Var to store app translations
@@ -56,13 +50,6 @@ class App
    */
   public $user = [];
 
-
-  /**
-   * Var to store current user vars retrieved by token
-   *
-   * @var object|null
-   */
-  public $locale = [];
 
 
   /**
@@ -172,9 +159,7 @@ class App
   {
 
     if (self::$instance === null) {
-
       self::$instance = new App;
-
     }
 
     return self::$instance;

@@ -49,14 +49,6 @@ class ConfigController extends Controller
             } 
                      
         }
-
-        //Aggiungo configurazioni locale a risposta json config per risparmiare una chiamata e farlo separatamente
-
-        //Se richiesto un locale in get lo istanzio al posto del default
-        if(isset($this->data['locale'])) {         
-            $config['locale'] = Locale::build($this->data['locale']);
-        } 
-        
    
         return $this->response($response,$config);
     }
