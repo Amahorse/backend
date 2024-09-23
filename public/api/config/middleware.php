@@ -17,16 +17,10 @@ return function (Slim $app) {
         "secure" => Domain::isSecure(),
         "rules" => [
             new Tuupola\Middleware\JwtAuthentication\RequestPathRule([
-                "path" => [
+                "ignore" => [
                     "/"
                 ],
-                "ignore" => [
-                    "/oauth/token",
-                    "/test",
-                    "/store",
-                    "/config",
-                    "/products"
-                ]
+          
             ]),
             new Tuupola\Middleware\JwtAuthentication\RequestMethodRule([
                 "ignore" => ["OPTIONS"],

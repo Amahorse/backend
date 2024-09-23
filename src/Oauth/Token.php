@@ -32,6 +32,27 @@ class Token
   private static $kid = null;
 
   /**
+   * kid
+   */
+  private static $issuer = null;
+
+  /**
+   * kid
+   */
+  public static $scope = '';
+
+  
+  /**
+   * kid
+   */
+  public static $role = 'guest';
+
+  /**
+   * kid
+   */
+  public static $user = [];
+
+  /**
    * Fa build di client id e client secret
    */
   public static function buildClient(string $client_id) {
@@ -53,6 +74,14 @@ class Token
     self::$kid = $secret["kid"];
 
     self::$client_id = $client_id;
+
+    self::$issuer = stripos($_SERVER['SERVER_PROTOCOL'],'https') === 0 ? 'https://' : 'http://' . $_SERVER['SERVER_NAME'] . '/oauth/token?client_id=' . $client_id;
+
+    self::$user = user();
+    
+    self::$scope = !empty($user['auth']) ? Scope::name(self::$user['auth']) : "guest";
+
+    self::$role = !empty($user['role']) ? Scope::name(self::$user['auth']) : "guest";
 
   }
 
@@ -88,7 +117,7 @@ class Token
      * @param boolean $database
      * @return array
      */
-    public static function generate(string $client_id, $user = [], $lifetime = false, $database = true):array
+    public static function generate(string $client_id, $user = [], $lifetime = false):array
     {
 
         self::buildClient($client_id);
@@ -124,10 +153,11 @@ class Token
             "jti" => $jti,
             "aud" => self::$client_id,
             "alg" => config('token','algorithm'),
-            'iss' => stripos($_SERVER['SERVER_PROTOCOL'],'https') === 0 ? 'https://' : 'http://' . $_SERVER['SERVER_NAME'] . '/oauth/token?client_id=' . $client_id,  // Issuer
+            'iss' => self::$issuer, 
             "sub" => !empty($user[config('token','identifier')]) ?  $user[config('token','identifier')] : null,
             "kid" => self::$kid,
-            "scope" => !empty($user['auth']) ? Scope::name($user['auth']) : "guest"
+            "role" => self::$role,
+            "scope" => self::$scope
         ];
 
 
@@ -144,10 +174,7 @@ class Token
 
         //Se è già stato generato e passato un token lo sostituisco
 
-        if($database) {
 
-          $issuer = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
-          
           if(defined('_OAUTH_TOKEN_JTI_')) {
 
             Db::updateArray('oauth_tokens',[
@@ -156,9 +183,10 @@ class Token
               "refresh_token" => $response["refresh_token"],
               'id_users' => !empty($user['id']) ? $user['id'] : null,
               'ip' => Browser::IP(),
+              'role' => Scope::name($user['auth']),
               'scope' => $payload["scope"],
               'ua' => $_SERVER['HTTP_USER_AGENT'],
-              'issuer' => $issuer,
+              'issuer' => self::$issuer,
             ],'jti',_OAUTH_TOKEN_JTI_);
   
           } else {
@@ -170,16 +198,14 @@ class Token
               "refresh_token" => $response["refresh_token"],
               'id_users' => !empty($user['id']) ? $user['id'] : null,
               'ip' => Browser::IP(),
+              'role' => self::$role,
               'scope' => $payload["scope"],
               'ua' => $_SERVER['HTTP_USER_AGENT'],
-              'issuer' => $issuer
+              'issuer' => self::$issuer,
             ]);
   
           }
-  
 
-        }
-        
      
 
         return $response;
@@ -216,10 +242,11 @@ class Token
         "jti" => $refresh["jti"],
         "aud" => self::$client_id,
         "alg" => config('token','algorithm'),
-        'iss' => address() . '/oauth/token?client_id=' . $client_id,  // Issuer
+        'iss' => self::$issuer,
         "sub" => !empty( $user[config('token','identifier')]) ?  $user[config('token','identifier')] : null,
         "kid" => self::$kid,
-        "scope" => !empty($user['auth']) ? Scope::name($user['auth']) : "guest"
+        "role" => Scope::name($user['auth']),
+        "scope" => self::$scope
       ];
 
       $access_token = JWT::encode($payload, self::$client_secret, config('token','algorithm'), self::$kid);
@@ -252,7 +279,7 @@ class Token
 
         try {
 
-          Jwt::decode($token,config('app','client_secret'),[config('token','algorithm')]);
+          Jwt::decode($token,config('app','client_secret'),config('token','algorithm'));
 
         } catch (Throwable $e) {
 
@@ -260,7 +287,7 @@ class Token
 
         }
 
-        Jwt::decode($token,config('app','client_secret'),[config('token','algorithm')]);
+        Jwt::decode($token,config('app','client_secret'),config('token','algorithm'));
       }
      
       return Db::getRow("SELECT jti FROM oauth_tokens WHERE access_token = " . encode($token) . " AND client_id = " . encode($client_id));

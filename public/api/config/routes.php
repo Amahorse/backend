@@ -51,8 +51,12 @@ return function (Slim $app) {
 
     //Configurazioni
     $app->get('/config', \Kodelines\Controllers\ConfigController::class . ':get')->setName('config.get');
+ 
+    //Configurazioni
+    $app->get('/docs', \Kodelines\Controllers\DocsController::class . ':get')->setName('docs.get');
 
-    $app->get('/currencies', \Kodelines\Controllers\CurrenciesController::class . ':sync')->setName('currencies.get');
+    $app->get('/docs/{element}', \Kodelines\Controllers\DocsController::class . ':get')->setName('docs.element.get');
+
     //DATI GEOGRAFICI
     $app->get('/countries', \Kodelines\Controllers\CountriesController::class . ':list')->setName('countries.list');
 

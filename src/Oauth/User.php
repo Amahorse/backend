@@ -32,7 +32,7 @@ class User
         }
     
         //Controllo livello autorizzazione minimo per accesso alla app
-        if(!in_array(Scope::name($user["auth"]),config('token','scopes'))) {      
+        if(!in_array(Scope::name($user["scopes"]),config('token','scopes'))) {      
           return false;
         }
    

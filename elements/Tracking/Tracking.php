@@ -34,8 +34,7 @@ class Tracking extends Decorator
     $tracking = [
       'oauth_tokens_jti' => _OAUTH_TOKEN_JTI_,
       'language' => _APP_LANGUAGE_,
-      'ref' => _CONTEXT_,
-      'domain' => Domain::current()
+      'domain' => Domain::current() 
     ];
 
 

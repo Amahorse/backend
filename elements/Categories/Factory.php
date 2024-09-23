@@ -20,9 +20,7 @@ class Factory implements FactoryInterface
   public static function loadRoutes(RouteCollectorProxy $app): RouteCollectorProxy {
 
     $app->get('/categories', \Elements\Categories\Controllers\CategoriesController::class . ':list')->setName('categories.list');
-
-    $app->get('/categories/main', \Elements\Categories\Controllers\CategoriesController::class . ':main')->setName('categories.list.main');
-
+    
     $app->get('/categories/{id:[0-9]+}', \Elements\Categories\Controllers\CategoriesController::class . ':get')->setName('categories.get');
 
     $app->get('/categories/{slug}', \Elements\Categories\Controllers\CategoriesController::class . ':slug')->setName('categories.slug');

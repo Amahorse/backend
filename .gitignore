@@ -29,3 +29,5 @@ public/cdn/**/*.*
 
 #Custom
 .idea
+
+elements_old/*

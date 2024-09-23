@@ -1,0 +1,320 @@
+{
+    "openapi": "3.0.2",
+    "info": {
+      "title": "API",
+      "version": "1.0"
+    },
+    "servers": [
+      {
+        "url": "http://api.amahorse.localhost"
+      }
+    ],
+    "components": {
+      "securitySchemes": {
+        "OAuth-Basic": {
+          "type": "oauth2",
+          "flows": {
+            "implicit": {
+              "authorizationUrl": "/oauth/token",
+              "scopes": {
+                "guest": "Grants read access",
+                "user": "Grants write access",
+                "administrator": "Grants access to admin operations",
+                "superadministrator": "Grants access to superadmin operations"
+              }
+            }
+          }
+        }
+      },
+      "parameters": {
+        "X-ClientType": {
+          "required": false,
+          "in": "header",
+          "name": "X-ClientType",
+          "schema": {
+            "type": "string",
+            "enum": ["b2c", "b2b"],
+            "default": "b2c"
+          }
+        },
+        "X-Language": {
+          "required": false,
+          "in": "header",
+          "name": "X-Language",
+          "schema": {
+            "type": "string",
+            "default": "it"
+          }
+        },
+        "X-Locale": {
+          "required": false,
+          "in": "header",
+          "name": "X-Locale",
+          "schema": {
+            "type": "string",
+            "enum": ["IT", "CH", "US"],
+            "default": "IT"
+          }
+        },
+        "X-IdCart": {
+          "required": false,
+          "in": "header",
+          "name": "X-IdCart",
+          "schema": {
+            "type": "integer",
+            "format": "int32",
+            "default": null
+          }
+        },
+        "X-IdResellers": {
+          "required": false,
+          "in": "header",
+          "name": "X-IdResellers",
+          "schema": {
+            "type": "integer",
+            "format": "int32",
+            "default": null
+          }
+        },
+        "X-IdStores": {
+          "required": false,
+          "in": "header",
+          "name": "X-IdStores",
+          "schema": {
+            "type": "integer",
+            "format": "int32",
+            "default": null
+          }
+        },
+        "X-IdAgents": {
+          "required": false,
+          "in": "header",
+          "name": "X-IdAgents",
+          "schema": {
+            "type": "integer",
+            "format": "int32",
+            "default": null
+          }
+        },
+        "X-IdCountries": {
+          "required": false,
+          "in": "header",
+          "name": "X-IdCountries",
+          "schema": {
+            "type": "integer",
+            "format": "int32",
+            "default": null
+          }
+        },
+        "X-Domain": {
+          "required": true,
+          "in": "header",
+          "name": "X-Domain",
+          "schema": {
+            "type": "string",
+            "default": "amahorse.com"
+          }
+        }
+      }
+    },
+    "paths": {
+      "/oauth/token": {
+        "get": {
+          "description": "Richiede oauth token per client id",
+          "tags": ["autenticazione"],
+          "parameters": [
+            {
+              "in": "query",
+              "name": "client_id",
+              "default": "xETZNsNHBMiDqLTV.45c19b29012947fa5c8f44c755fe901e.1698312544Z6SY",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK, salvare nuovo access_token in session e refresh_token in cookie"
+            },
+            "403": {
+              "description": "Client id non valido, accesso non consentito"
+            }
+          }
+        },
+        "post": {
+          "description": "Refresh token",
+          "tags": ["autenticazione"],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "client_id": {
+                      "type": "string",
+                      "default": "lJ4YyXzghqOoQgO8.e7233abf1f42adec51ed8df65106f635.16793916723YmK"
+                    },
+                    "refresh_token": {
+                      "type": "string",
+                      "default": "opDE4I6GOAgdfDk7.3faba64dc304dafb08e9acc56d4f9e46.1681812076Royf"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "OK, salvare nuovo access_token in session"
+            },
+            "400": {
+              "description": "Bad request (parametri mancanti o non validi)"
+            },
+            "401": {
+              "description": "Token scaduto, va richiesto nuovo access token"
+            },
+            "403": {
+              "description": "Token revocato o con accesso non consentito"
+            }
+          }
+        }
+      },
+      "/oauth/login": {
+        "post": {
+          "description": "Richiede oauth token per client id",
+          "tags": ["autenticazione"],
+          "security": [
+            {
+              "OAuth-Basic": []
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["userName"],
+                  "properties": {
+                    "client_id": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "password": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "OK, salvare nuovo access_token in session e refresh_token in cookie"
+            },
+            "403": {
+              "description": "Client id non valido, accesso non consentito"
+            }
+          }
+        }
+      },
+      "/oauth/logout": {
+        "post": {
+          "description": "Revoca il token corrente, ritorna nuovo token guest",
+          "tags": ["autenticazione"],
+          "security": [
+            {
+              "OAuth-Basic": []
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK, salvare nuovo access_token in session e refresh_token in cookie"
+            },
+            "403": {
+              "description": "Client id non valido, accesso non consentito"
+            }
+          }
+        }
+      },
+      "/oauth/check": {
+        "post": {
+          "description": "Controlla se email esiste già",
+          "tags": ["autenticazione"],
+          "security": [
+            {
+              "OAuth-Basic": []
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "email": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "OK"
+            },
+            "403": {
+              "description": "Email non consentita"
+            }
+          }
+        }
+      },
+      "/config": {
+        "get": {
+          "security": [
+            {
+              "OAuth-Basic": []
+            }
+          ],
+          "description": "Configurazioni di base, senza questo il sistema non si può avviare, non richiede alcun parametro in header o in get",
+          "tags": ["base"],
+          "responses": {
+            "200": {
+              "description": "Array multuplo di configurazioni",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/definitions/Config"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "definitions": {
+        "Config": {
+          "type": "object",
+          "properties": {
+            "default": {
+              "type": "object",
+              "description": "Prametri di default sono tutti sovrascrivibili da tag"
+            },
+            "configurator": {
+              "type": "object",
+              "description": "Parametri configuratore sono fissi"
+            },
+            "locale": {
+              "type": "object",
+              "description": "Parametri del locale"
+            }
+          }
+        }
+      }
+}

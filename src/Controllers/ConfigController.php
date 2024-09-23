@@ -17,9 +17,9 @@ class ConfigController extends Controller
     public function get(Request $request, Response $response, array $args) : Response
     {   
 
-        dump('aaaa');
+
         //TODO: questo non è x bu in teoria
-        if($domainHeader = $request->getHeaderLine("X-Bu-Domain")) {
+        if($domainHeader = $request->getHeaderLine("X-Domain")) {
             App::getInstance()->domain = $domainHeader;
         }
 

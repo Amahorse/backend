@@ -285,6 +285,10 @@ abstract class Model implements ModelInterface
         continue;
       }
 
+      if (is_string($value) && strpos($value, ',') !== false) {
+        $value = explode(',', $value);
+      }
+
 
       //Controllo se valore è nullo
       if($value === NULL) { 

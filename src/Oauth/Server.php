@@ -24,7 +24,7 @@ class Server
      * Costruisce parametri oauth server in base a 
      */
     public function __construct(Request $request, array $arguments) {
-        dump('aaaa');
+
         /**
          * Definisco il token inviato come costante
          */

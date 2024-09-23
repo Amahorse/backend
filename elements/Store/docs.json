@@ -1,0 +1,150 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "Store API",
+    "version": "1.0.0",
+    "description": "API for retrieving store product details"
+  },
+  "paths": {
+    "/store/b2b": {
+      "get": {
+        "summary": "Lista prodotti",
+        "description": "Retrieve detailed information about a product by its ID",
+        "responses": {
+          "200": {
+            "description": "Product details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/Product"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Product not found"
+          }
+        }
+      }
+    },
+    "/store/b2b/{id}": {
+      "get": {
+        "summary": "Get product by ID",
+        "description": "Retrieve detailed information about a product by its ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID of the product to retrieve"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/Product"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Product not found"
+          }
+        }
+      }
+    }
+  },
+  
+  "definitions": {
+    "Product": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "integer" },
+        "season": { "type": ["string", "null"] },
+        "code": { "type": "string" },
+        "family": { "type": "string" },
+        "gender": { "type": ["string", "null"] },
+        "age": { "type": ["string", "null"] },
+        "type": { "type": ["string", "null"] },
+        "material": { "type": ["string", "null"] },
+        "tech": { "type": "string" },
+        "discipline": { "type": ["string", "null"] },
+        "a0": { "type": "string" },
+        "a1": { "type": "string" },
+        "a4": { "type": ["string", "null"] },
+        "split": { "type": ["string", "null"] },
+        "brand": { "type": "string" },
+        "brand_code": { "type": "string" },
+        "slug": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": ["string", "null"] },
+        "content": { "type": "string" },
+        "meta_title": { "type": "string" },
+        "meta_description": { "type": "string" },
+        "indexable": { "type": "integer" },
+        "size_fit": { "type": ["string", "null"] },
+        "composition": { "type": "string" },
+        "info_care": { "type": "string" },
+        "variants": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Variant"
+          }
+        },
+        "categories": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Category"
+          }
+        }
+      }
+    },
+    "Variant": {
+      "type": "object",
+      "properties": {
+        "variant": { "type": "string" },
+        "sku": { "type": "string" },
+        "status": { "type": "string" },
+        "collection": { "type": ["string", "null"] },
+        "season": { "type": ["string", "null"] },
+        "color_primary": { "type": "string" },
+        "color_secondary": { "type": ["string", "null"] },
+        "a0_code": { "type": "string" },
+        "a0_description": { "type": "string" },
+        "a0_order": { "type": "string" },
+        "a1_code": { "type": "string" },
+        "a1_description": { "type": "string" },
+        "a1_order": { "type": "string" },
+        "a4_code": { "type": ["string", "null"] },
+        "a4_description": { "type": ["string", "null"] },
+        "a4_order": { "type": ["string", "null"] },
+        "cover": { "type": "string" },
+        "minimum_order": { "type": "integer" },
+        "id_store_products": { "type": "integer" },
+        "currency": { "type": "string" },
+        "taxes_included": { "type": "integer" },
+        "availability": { "type": "integer" },
+        "price": { "type": "number" },
+        "price_discount": { "type": "string" },
+        "price_to_pay": { "type": "string" },
+        "discount_percentage": { "type": "string" },
+        "total_price": { "type": "string" },
+        "total_discount": { "type": "string" },
+        "total_to_pay": { "type": "string" }
+      }
+    },
+    "Category": {
+      "type": "object",
+      "properties": {
+        "id_categories": { "type": "integer" },
+        "category": { "type": "string" }
+      }
+    }
+  }
+}

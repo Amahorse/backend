@@ -30,7 +30,9 @@ class CategoriesModel extends Model {
       FROM
        categories 
       JOIN categories_lang ON categories.id = categories_lang.id_categories
-      LEFT JOIN categories_lang ml ON ml.id_categories = categories.id_categories_main AND ml.language = ".encode($language);
+      LEFT JOIN categories_lang ml ON ml.id_categories = categories.id_categories_main AND ml.language = ".encode($language) ."
+      WHERE categories.uniqid IS NOT NULL 
+      ";
 
       $query.= $this->applyFilters($filters);
 

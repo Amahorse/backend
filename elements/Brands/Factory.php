@@ -21,8 +21,6 @@ class Factory implements FactoryInterface
 
     $app->get('/brands', \Elements\Brands\Controllers\BrandsController::class . ':list')->setName('brands.list');
 
-    $app->get('/brands/main', \Elements\Brands\Controllers\BrandsController::class . ':main')->setName('brands.list.main');
-
     $app->get('/brands/{id:[0-9]+}', \Elements\Brands\Controllers\BrandsController::class . ':get')->setName('brands.get');
 
     $app->get('/brands/{slug}', \Elements\Brands\Controllers\BrandsController::class . ':slug')->setName('brands.slug');
