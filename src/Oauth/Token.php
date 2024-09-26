@@ -55,7 +55,7 @@ class Token
   /**
    * Fa build di client id e client secret
    */
-  public static function buildClient(string $client_id) {
+  public static function buildClient(string $client_id, $user = []):void {
 
     if(!Key::isValid($client_id)) {
       throw new InvalidArgumentException('client_id_not_valid');
@@ -76,12 +76,10 @@ class Token
     self::$client_id = $client_id;
 
     self::$issuer = stripos($_SERVER['SERVER_PROTOCOL'],'https') === 0 ? 'https://' : 'http://' . $_SERVER['SERVER_NAME'] . '/oauth/token?client_id=' . $client_id;
-
-    self::$user = user();
     
-    self::$scope = !empty($user['auth']) ? Scope::name(self::$user['auth']) : "guest";
+    self::$scope = !empty($user['scope']) ? str_replace(","," ",$user['scope']) : "login";
 
-    self::$role = !empty($user['role']) ? Scope::name(self::$user['auth']) : "guest";
+    self::$role = !empty($user['role']) ? $user['role'] : "guest";
 
   }
 
@@ -120,7 +118,7 @@ class Token
     public static function generate(string $client_id, $user = [], $lifetime = false):array
     {
 
-        self::buildClient($client_id);
+        self::buildClient($client_id, $user);
 
         //DOC: guardare qui per autenticazione con kid
         //https://firebase.google.com/docs/auth/admin/verify-id-tokens?hl=it
@@ -170,10 +168,11 @@ class Token
           "expires_in" => $exp - time(),
           "refresh_token" => Key::generate(),
           "scope" => $payload["scope"],
+          "role" => $payload["role"]
         ];
 
-        //Se è già stato generato e passato un token lo sostituisco
-
+        //Salvo in database solo utenti loggati
+        if(!empty($user['id']))  {
 
           if(defined('_OAUTH_TOKEN_JTI_')) {
 
@@ -196,7 +195,7 @@ class Token
               'client_id' => self::$client_id,
               'access_token' => $access_token,
               "refresh_token" => $response["refresh_token"],
-              'id_users' => !empty($user['id']) ? $user['id'] : null,
+              'id_users' => $user['id'],
               'ip' => Browser::IP(),
               'role' => self::$role,
               'scope' => $payload["scope"],
@@ -206,7 +205,7 @@ class Token
   
           }
 
-     
+        }
 
         return $response;
     }

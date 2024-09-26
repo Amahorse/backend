@@ -30,11 +30,6 @@ class User
         if(!$user = Users::where($sub, $identifier)) {
           return false;
         }
-    
-        //Controllo livello autorizzazione minimo per accesso alla app
-        if(!in_array(Scope::name($user["scopes"]),config('token','scopes'))) {      
-          return false;
-        }
    
 
         if($check && !Password::check($user['hash'],$password,$user['id'])) {

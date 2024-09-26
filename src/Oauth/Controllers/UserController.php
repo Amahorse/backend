@@ -31,14 +31,18 @@ class UserController extends Controller
      */
     public function login(Request $request, Response $response, array $args) : Response
     {   
-
+     
         if(empty($this->data["client_id"])) {
           throw new HttpBadRequestException($request,'client_id_required');
         }
 
         //Controllo se identificatore utente (email o userame è presente) o password è presente
-        if(empty($this->data[config('token','identifier')]) || empty($this->data['password'])) {
-          throw new HttpBadRequestException($request,'missing_username_or_password');
+        if(empty($this->data[config('token','identifier')])) {
+          throw new HttpBadRequestException($request,'missing_username');
+        }
+
+        if(empty($this->data['password'])) {
+          throw new HttpBadRequestException($request,'missing_password');
         }
 
         if(!$user = User::checkCredentials($this->data[config('token','identifier')],config('token','identifier'),$this->data['password'])) {

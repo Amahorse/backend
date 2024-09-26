@@ -50,7 +50,7 @@ class Log
       }
       $xml .= '</' . $type . '>' . _RN_;
 
-      $log_file = config('dir', 'logs') . $type . '.log';
+      $log_file = _DIR_LOGS_ . $type . '.log';
       
       //Se il file è troppo grande lo elimina e ne ricrea uno nuovo subito dopo
       if (File::size($log_file) > 100000) {

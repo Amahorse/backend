@@ -194,6 +194,10 @@ class Server
         }
 
         
+        //DOMINIO 
+        if($domainHeader = $request->getHeaderLine("X-Domain")) {
+            define('_APP_DOMAIN_',$domainHeader);
+        }
 
 
     }

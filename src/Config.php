@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Kodelines;
 
-use Kodelines\Helpers\Locale;
 use Kodelines\Tools\Folder;
 
 class Config
@@ -52,10 +51,10 @@ class Config
      * @param  array      $options Contiene opzioni da passare direttamente al costruttore
      * @return object     Return this object
      */
-    public function __construct($options = ['domain' => false])
+    public function __construct($domain = false)
     {
 
-        $this->domain = $options['domain'];
+        $this->domain = $domain;
 
         //Prendo i valori custom dalla app
         return $this->load();

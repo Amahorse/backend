@@ -303,6 +303,7 @@ class Import
 
             }
 
+            //TODO: se non c'è nessun gruppo per prodotto va loggato
             //Importazione categorie 
             if(!empty($values['id_group'])) {
 

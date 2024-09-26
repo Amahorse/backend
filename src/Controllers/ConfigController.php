@@ -1,11 +1,10 @@
 <?php
 
-
 declare(strict_types=1);
 
 namespace Kodelines\Controllers;
 
-use Kodelines\App;
+use Kodelines\Config;
 use Kodelines\Abstract\Controller;
 use Psr\Http\Message\RequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -17,17 +16,13 @@ class ConfigController extends Controller
     public function get(Request $request, Response $response, array $args) : Response
     {   
 
+        $instance = new Config(defined('_APP_DOMAIN_') ? _APP_DOMAIN_ : false);
 
-        //TODO: questo non è x bu in teoria
-        if($domainHeader = $request->getHeaderLine("X-Domain")) {
-            App::getInstance()->domain = $domainHeader;
-        }
+        $instance->generate();
 
-        App::getInstance()->config->generate();
+        $reserved = $instance->reserved;
 
-        $reserved = App::getInstance()->config->reserved;
-
-        $config = App::getInstance()->config->values;
+        $config = $instance->values;
 
         foreach($reserved as $group => $value) {
             
