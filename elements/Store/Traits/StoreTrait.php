@@ -68,6 +68,7 @@ trait StoreTrait {
     'a4_description',
     'a4_order',
     'cover',
+    'cover_url',
     'price',  
     'price_discount',
     'price_to_pay',
