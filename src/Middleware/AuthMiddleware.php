@@ -60,8 +60,9 @@ class AuthMiddleware implements MiddlewareInterface
     public function process(Request $request, RequestHandler $handler): Response
     {
         
+        //TODO: Da rifare tutto il sistema con gli scope
         $response = $handler->handle($request);
-       
+       /*
         //Non c'è utente e accesso è ristretto a guest
         if(empty($_ENV['user']) && $this->min_level <> 'guest') {   
             throw new HttpForbiddenException($request,'access_denied');
@@ -74,9 +75,7 @@ class AuthMiddleware implements MiddlewareInterface
         if((int)$_ENV['user']["auth"] < Scope::code($this->min_level)) {      
             throw new HttpForbiddenException($request,'access_denied');
         }
-       
-      
-
+       */
         return $response;
 
     }

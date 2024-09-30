@@ -40,7 +40,7 @@ class Config
      */
 
     public $reserved = [
-        "app" => ["client_secret"],
+        "app" => ["client_secret","administrator","cache","cache_expire_time","development_mode","client_id"],
         "token",
         "db",
         "domains",
@@ -49,6 +49,7 @@ class Config
         "token",
         "facebook",
         "tracking",
+        "dir",
         "stripe" => ["secret", "webhook_endpoint_secret"],
         "paypal" => ["client_secret"],
         "recaptcha" => ["secret"],
@@ -89,11 +90,9 @@ class Config
                 "cache" => true,
                 "cache_expire_time" => 86400, //1 Day
                 "development_mode" => true,
-                "indexable" => true,
                 "client_id" => '',
                 "client_secret" => '',
                 "administrator" => "webmail@kodelines.com",
-                "copyright" => date('Y') . ' Kodelines',
                 "cdn" => "/",
                 "languages" => "en" //Può essere array multiplo, se non trovata lingua attiva nel browser prende quella del gruppo default, ci va sempre messa per le lingue gestite da backend sulle tab contenuti, poi possono essere specificate quelle da attivare sul dominio specifico  
             ],

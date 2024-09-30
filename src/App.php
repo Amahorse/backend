@@ -5,6 +5,8 @@
  * L'istanza viene inizializzata con valori base nel container di ogni context e poi riempita dai vari middleware o container
  */
 
+/* TODO: gestire quello che è rimasto da gestire su container */
+
 declare(strict_types=1);
 
 namespace Kodelines;
