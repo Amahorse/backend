@@ -29,7 +29,7 @@ return function (Slim $app) {
         "before" => function ($request, $arguments)  {
            
             try {
-
+          
                 //Istanzio nuovo oauth server con le variabili del token
                 new Server($request, $arguments);
 

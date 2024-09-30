@@ -10,6 +10,7 @@ use InvalidArgumentException;
 use Kodelines\Db;
 use Kodelines\Key;
 use Kodelines\Tools\Client as Browser;
+use Kodelines\Tools\Domain;
 use Firebase\JWT\JWT;
 
 
@@ -75,7 +76,7 @@ class Token
 
     self::$client_id = $client_id;
 
-    self::$issuer = stripos($_SERVER['SERVER_PROTOCOL'],'https') === 0 ? 'https://' : 'http://' . $_SERVER['SERVER_NAME'] . '/oauth/token?client_id=' . $client_id;
+    self::$issuer = Domain::protocol() . $_SERVER['SERVER_NAME'] . '/oauth/token?client_id=' . $client_id;
     
     self::$scope = !empty($user['scope']) ? str_replace(","," ",$user['scope']) : "login";
 

@@ -103,7 +103,7 @@ class App
     //Recupero configurazioni app 
     $this->config = new Config(['strict' => true, 'domain' => $this->domain]);
  
-    $this->address = config('app','protocol') . '://' . $this->domain;
+
 
     //Questo va fatto ora perchè il dominio può avere debug mode diversi
     if (dev()) {

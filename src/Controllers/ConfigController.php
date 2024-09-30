@@ -15,7 +15,7 @@ class ConfigController extends Controller
 
     public function get(Request $request, Response $response, array $args) : Response
     {   
-
+      
         $instance = new Config(defined('_APP_DOMAIN_') ? _APP_DOMAIN_ : false);
 
         $instance->generate();

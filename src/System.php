@@ -130,10 +130,10 @@ class System
           }      
   
           // Register routes
-          (require getcwd() . '/config/routes.php')($app);
+          (require getcwd() . '/app/routes.php')($app);
   
           // Register middleware
-          (require  getcwd() . '/config/middleware.php')($app);
+          (require  getcwd() . '/app/middleware.php')($app);
   
   
           return $app;

@@ -306,10 +306,6 @@
               "type": "object",
               "description": "Prametri di default sono tutti sovrascrivibili da tag"
             },
-            "configurator": {
-              "type": "object",
-              "description": "Parametri configuratore sono fissi"
-            },
             "locale": {
               "type": "object",
               "description": "Parametri del locale"

@@ -15,7 +15,6 @@ return [
         "client_secret" => "CAY54VNXLFqpccvk.9ba601a09a9834e770f201b3892f2508.1698312544f9V2",
         "indexable" => false,
         "administrator" => "info@App.com",
-        "protocol" => "http",
         "copyright" => "All Rights Reserved"
     ],
     "default" => [

@@ -135,7 +135,7 @@ class ApiMiddleware implements MiddlewareInterface
      * @return Response
      */
     public function buildHeader(): Response {
- 
+    
         $response = new Response();
 
         //Set Headers

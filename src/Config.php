@@ -38,9 +38,22 @@ class Config
      *
      * @var array
      */
-    //TODO: qua andrebbe fatto l'inverso, mettere su controller api quelli pubblici anche con sub array
-    public $reserved = ["app" => ["client_secret"],"token","db","domains","dir","log","auth","token","facebook","stripe" => ["secret","webhook_endpoint_secret"],"paypal" => ["client_secret"],"recaptcha" => ["secret"],"upload"];
 
+    public $reserved = [
+        "app" => ["client_secret"],
+        "token",
+        "db",
+        "domains",
+        "logs",
+        "auth",
+        "token",
+        "facebook",
+        "tracking",
+        "stripe" => ["secret", "webhook_endpoint_secret"],
+        "paypal" => ["client_secret"],
+        "recaptcha" => ["secret"],
+        "upload"
+    ];
 
 
     /**
@@ -165,7 +178,13 @@ class Config
         foreach(Folder::read(_DIR_ELEMENTS_) as $element) {
 
             if(file_exists(_DIR_ELEMENTS_ . $element . '/Config.php')) {
-                $default = array_replace_recursive($default,require_once(_DIR_ELEMENTS_ . $element . '/Config.php'));
+
+                $config = require(_DIR_ELEMENTS_ . $element . '/Config.php');
+
+                if(is_array($config)) {
+                    $default = array_replace_recursive($default,$config);
+                }
+   
             }
 
         }
