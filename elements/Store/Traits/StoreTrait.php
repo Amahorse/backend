@@ -30,6 +30,8 @@ trait StoreTrait {
     'tech',
     'season',
     'discipline',
+    'neutral_image',
+    'neutral_image_url',
     'a0',
     'a1',
     'a4',
@@ -43,7 +45,6 @@ trait StoreTrait {
     'tech_spech',
     'composition',
     'info_care'
-
   ];
 
   /**
@@ -115,6 +116,8 @@ trait StoreTrait {
       $values[$key]['categories'] = array_values($value['categories']);
       $values[$key]['variants'] = array_values($value['variants']);
     }
+
+
 
     return $values;
 

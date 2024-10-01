@@ -1,127 +1,111 @@
 <?php
 
 use Kodelines\Db;
+use Kodelines\System;
 
 if (!function_exists('config')) {
   /**
-   * Shortcut to get a config group or a single group from loaded config vars
+   * Retrieves a configuration value or group.
    *
-   * @method config
-   * @param  string         $group   Config group name (key of json), in case of .php config is the name of the php file (no extension)
-   * @param  string|boolean $value   Optional config group value
-   * @return mixed            False if not found, array if config group or value if config value
+   * @param string $type  Config group name or key.
+   * @param string|bool $value Optional specific config value.
+   * @return mixed False if not found, array if config group, or specific config value.
    */
   function config(string $type, string|bool $value = false): mixed {
-    return !empty($_ENV['config']) ? $_ENV['config']->get($type, $value) : false;
+    return !empty(System::$config) ? System::$config->get($type, $value) : false;
   }
 }
 
-
 if (!function_exists('dev')) {
   /**
-   * Shortcut to check if system is in development mode based on app config 
+   * Checks if the system is in development mode.
    *
-   * @method dev
-   * @return bool
+   * @return bool True if in development mode, false otherwise.
    */
-  function dev(): bool
-  {
-    return !empty($_ENV['config']) && config('app', 'development_mode');
+  function dev(): bool {
+    return config('app', 'development_mode');
   }
 }
 
 if (!function_exists('dump')) {
   /**
-   * Fa morire il sistema facendo il dump di un valore (da utilizzare a scopo di debug)
+   * Dumps a value and terminates the script (for debugging purposes).
    *
-   * @method dump
+   * @param mixed $value The value to dump.
    * @return void
    */
-  function dump(mixed $value): void
-  {
+  function dump(mixed $value): void {
     die(var_dump($value));
   }
 }
 
-
 if (!function_exists('user')) {
   /**
-   * Ritorna valori utente in sessione, può tornare false se utente non loggato, tutto l'array di valori o il singolo specificato
+   * Retrieves user session values.
    *
-   * @param string $value
-   * @param string|bool $sub
-   * @return mixed
+   * @param string|null $value Optional specific user value.
+   * @param string|bool $sub Optional sub-value.
+   * @return mixed False if user not logged in or value not found, otherwise the user value.
    */
-  function user($value = null, $sub = false): mixed
-  {
-    if (empty($_ENV['user'])) {
+  function user(string $value = null, string|bool $sub = false): mixed {
+    if (empty(System::$user)) {
       return false;
     }
 
     if (!$value) {
-      return $_ENV['user'];
+      return System::$user;
     }
 
-    if (!isset($_ENV['user'][$value])) {
+    if (!isset(System::$user[$value])) {
       return false;
     }
 
-    if ($sub && !isset($_ENV['user'][$value][$sub])) {
+    if ($sub && !isset(System::$user[$value][$sub])) {
       return false;
     }
 
-    return $sub ? $_ENV['user'][$value][$sub] : $_ENV['user'][$value];
+    return $sub ? System::$user[$value][$sub] : System::$user[$value];
   }
 }
 
-  
 if (!function_exists('id')) {
-    /**
-     * Cast var 
-     *
-     * @method developmentMode
-     * @return int
-     */
-   function id(mixed $id): int
-    {
-
-      if(is_bool($id)) {
-        return 0;
-      }
-
-      return (int)filter_var($id, FILTER_SANITIZE_NUMBER_INT);
+  /**
+   * Casts a variable to an integer, sanitizing it.
+   *
+   * @param mixed $id The variable to cast.
+   * @return int The sanitized integer.
+   */
+  function id(mixed $id): int {
+    if (is_bool($id)) {
+      return 0;
     }
-  
+
+    return (int)filter_var($id, FILTER_SANITIZE_NUMBER_INT);
+  }
 }
 
 if (!function_exists('encode')) {
   /**
-   * Cast var 
+   * Encodes a string using the database encoding method.
    *
-   * @method developmentMode
-   * @return mixed
+   * @param mixed $string The string to encode.
+   * @return mixed The encoded string.
    */
- function encode(mixed $string): mixed
-  {
+  function encode(mixed $string): mixed {
     return Db::encode($string);
   }
-
 }
 
 if (!function_exists('options')) {
   /**
-   * Genera un array chiave->valore per valori enum del database da usare in input select
+   * Generates an array of key-value pairs for enum values from the database.
    *
-   * @param string $table
-   * @param string $field
-   * @param array $extra
-   * @return array
+   * @param string $table The database table.
+   * @param string $field The field in the table.
+   * @param array $extra Optional extra parameters.
+   * @return array The key-value pairs for the enum values.
    */
- function options(string $table, string $field,$extra = []): array
-  {
-    return Db::enumOptions($table,$field,$extra);
+  function options(string $table, string $field, array $extra = []): array {
+    return Db::enumOptions($table, $field, $extra);
   }
-
 }
-
-

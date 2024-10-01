@@ -72,7 +72,7 @@ class Json
 	public static function encode(mixed $data): string
 	{
 
-	
+
 		//This fix the problem of first 0 on numeric value forJSON NUMERIC CHECK
 		if(!dev()) {
 

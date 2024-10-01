@@ -9,6 +9,7 @@ use Elements\Stores\Stores;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Exception\HttpForbiddenException;
 use Slim\Exception\HttpUnauthorizedException;
+use DI\Container;
 
 class Server
 {
@@ -23,7 +24,7 @@ class Server
     /**
      * Costruisce parametri oauth server in base a 
      */
-    public function __construct(Request $request, array $arguments) {
+    public function __construct(Request $request, array $arguments, Container $container) {
 
         /**
          * Definisco il token inviato come costante
@@ -71,7 +72,7 @@ class Server
                 throw new HttpUnauthorizedException($request,'Scope not valid');
             }
 
-            $_ENV['user'] = $user;
+            $container->set('user',$user);
     
         } else {
 

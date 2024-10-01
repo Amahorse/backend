@@ -22,12 +22,9 @@ class TestController extends Controller
 
     public function get(Request $request, Response $response, array $args) : Response
     {   
-        dump($_SERVER);
-
-        return $this->response($response,St::list());
+ 
         Db::getInstance()->skipError = true;
 
-        return $this->response($response,true);
         if($args['type'] == 'store') {
             Store::start();
         } elseif($args['type'] == 'products') {
@@ -44,8 +41,7 @@ class TestController extends Controller
             Store::availabilities();
         } elseif($args['type'] == 'users') {
             Users::start();
-        } 
-        else {
+        } else {
             return $this->response($response,false);
         }
         

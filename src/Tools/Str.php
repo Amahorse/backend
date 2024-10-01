@@ -99,7 +99,7 @@ class Str
 
         $string = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $string); //ascii conversion
 
-        $string = utf8_encode(strtolower($string)); // lower and utf8 conversion
+        $string = mb_strtolower($string); // lower and utf8 conversion
 
         $string = trim($string);
 

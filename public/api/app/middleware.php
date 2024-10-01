@@ -26,12 +26,12 @@ return function (Slim $app) {
                 "ignore" => ["OPTIONS"],
             ])
         ],
-        "before" => function ($request, $arguments)  {
+        "before" => function ($request, $arguments, $app)  {
            
             try {
           
                 //Istanzio nuovo oauth server con le variabili del token
-                new Server($request, $arguments);
+                new Server($request, $arguments, $app->getContainer());
 
 
             } catch (Throwable $e) { 

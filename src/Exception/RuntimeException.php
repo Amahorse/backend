@@ -26,13 +26,9 @@ class RuntimeException extends Exception
         int $code = 500,
         ?Throwable $previous = null
     ) {
-
+        //TODO: verificare se non serve
         $message .= " in " . $this->getFile() . " on line: " . $this->getLine();
- 
-           //Se app non inizializzata muore con il messaggio
-        if(!App::checkInstance()) {
-            die($message);
-        }
+
 
         new Log("errors", $message);
 

@@ -23,12 +23,17 @@ class System
    */
   const VERSION = '1.0';
 
+
+  public static Config $config;
+
+  public static $user;
+
   /**
    * Trova la root del sistema. funziona solo se messo dentro cartella apps/
    *
    * @return string
    */
-  public static  function findRoot():string {
+  public static function findRoot():string {
   
     $split = explode("public",getcwd());
   
@@ -106,9 +111,11 @@ class System
 
     mb_http_output("UTF-8");
 
-    $_ENV['config'] = new Config();
 
     $containerBuilder = new ContainerBuilder();
+
+    self::$config = new Config();
+    
 
     // Set up settings
     $containerBuilder->addDefinitions([
@@ -116,7 +123,8 @@ class System
           'addContentLengthHeader' => false,
           'determineRouteBeforeAppMiddleware' => true
       ],
-  
+      'config' => self::$config,
+
       App::class => function (ContainerInterface $container) {
   
           $app = AppFactory::createFromContainer($container);
@@ -133,7 +141,7 @@ class System
           (require getcwd() . '/app/routes.php')($app);
   
           // Register middleware
-          (require  getcwd() . '/app/middleware.php')($app);
+          (require getcwd() . '/app/middleware.php')($app);
   
   
           return $app;

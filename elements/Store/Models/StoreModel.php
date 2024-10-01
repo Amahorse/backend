@@ -38,6 +38,7 @@ class StoreModel extends Model {
       store_products.*,
       store_products.id AS id_store_products,
       products.*,
+      products.id AS id,
       stores.currency,
       stores.taxes_included,
       brands.title AS brand,

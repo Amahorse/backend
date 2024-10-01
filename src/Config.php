@@ -94,14 +94,11 @@ class Config
                 "client_secret" => '',
                 "administrator" => "webmail@kodelines.com",
                 "cdn" => "/",
-                "languages" => "en" //Può essere array multiplo, se non trovata lingua attiva nel browser prende quella del gruppo default, ci va sempre messa per le lingue gestite da backend sulle tab contenuti, poi possono essere specificate quelle da attivare sul dominio specifico  
+                "languages" => ["it","en"] //Può essere array multiplo, se non trovata lingua attiva nel browser prende quella del gruppo default, ci va sempre messa per le lingue gestite da backend sulle tab contenuti, poi possono essere specificate quelle da attivare sul dominio specifico  
             ],
             "default" => [
-                "id_countries" => 380,
                 "language" => "it",
-                "currency" => "EUR",
-                "locale" => "IT",
-                "scope" => "provisional", //Scope di default a registrazione nuovo utente
+                "locale" => "it"
             ],
             "db" => [ //Necessari al funzionamento del db
                 "server" => null,
@@ -113,6 +110,7 @@ class Config
             "locales" => [
                 "IT" =>[
                     "lcid" => "it-IT",
+                    "id_countries" => 380,
                     "currency" => "EUR",
                     "currency_symbol" => "€",
                     "time_format" => "H:i",

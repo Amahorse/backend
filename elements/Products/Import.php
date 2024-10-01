@@ -97,6 +97,32 @@ class Import
                 $insert['split'] = NULL;
             }
 
+       
+            if(!empty($values['weight'])) {
+                $insert['weight'] = (float)$values['weight'];
+            } else {
+                $insert['weight'] = NULL;
+            }
+
+            if(!empty($values['cover'])) {
+                $insert['neutral_image_url'] = $values['cover'];
+            } else {
+                $insert['neutral_image_url'] = NULL;
+            }
+
+            if(!empty($values['made_in'])) {
+                $insert['made_in'] = $values['made_in'];
+            } else {
+                $insert['made_in'] = NULL;
+            }
+
+            if(!empty($values['tarif_number'])) {
+                $insert['tarif_number'] = $values['tarif_number'];
+            } else {
+                $insert['tarif_number'] = NULL;
+            }
+
+
 
             //Availability type è = 
             if(!empty($values['market_sale']) && $values['market_sale'] == 'ITA') {
@@ -182,7 +208,7 @@ class Import
 
                 $a0 = Str::plain($values['tipologia_A0']);
 
-                if(array_key_exists($a0,$a_options)) {
+                if(in_array($a0,$a_options)) {
                     $insert['a0'] = $a0;
                 } else {
                     Log::error('products',$code,'Tipologia A0 inesistente: ' . $a0);
@@ -197,7 +223,7 @@ class Import
                               
                 $a1 = Str::plain($values['tipologia_A1']);
 
-                if(array_key_exists($a1,$a_options)) {
+                if(in_array($a1,$a_options)) {
                     $insert['a1'] = $a1;
                 } else {
                     Log::error('products',$code,'Tipologia A1 inesistente: ' . $a1);
@@ -213,7 +239,7 @@ class Import
 
                 $a4 = Str::plain($values['tipologia_A4']);
 
-                if(array_key_exists($a4,$a_options)) {
+                if(in_array($a4,$a_options)) {
                     $insert['a4'] = $a4;
                 } else {
                     Log::error('products',$code,'Tipologia A1 inesistente: ' . $a4);
@@ -257,49 +283,58 @@ class Import
             }
 
             //Lingua 
-            $it = [
-                'id_products' => $insert['id'],
-                'title' => $values['title_ita'],
-                'meta_title' => $values['title_ita'],
-                'language' => 'it',
-                'slug' => Str::plain($values['title_ita']),
-                'tech_spech' => !empty($values['tech_spec_ita']) ? str_replace('/n','',$values['tech_spec_ita']) : null,
-                'description' => !empty($values['catchline_ita']) ? strip_tags(str_replace('/n','',$values['catchline_ita'])) : null,
-                'content' => !empty($values['description_ita']) ? str_replace('/n','',$values['description_ita']) : null,
-                'size_fit' => !empty($values['size_fit_ita']) ? str_replace('/n','',$values['size_fit_ita']) : null,
-                'composition' => !empty($values['composition_ita']) ? str_replace('/n','',$values['composition_ita']) : null,
-                'info_care' => !empty($values['info_care_ita']) ? str_replace('/n','',$values['info_care_ita']) : null,
-                'meta_title' => !empty($values['tag_title_ita']) ? str_replace(' | Shop | Equestro','',$values['tag_title_ita']) : null,
-                'meta_description' => !empty($values['meta_desc_ita']) ? str_replace('/n','',$values['meta_desc_ita']) : null,
-            ];
+            if(!empty($values['title_ita'])) {
 
-            //TODO: su import logs fare start subito e end a null se non ha concluso
+                $it = [
+                    'id_products' => $insert['id'],
+                    'title' => $values['title_ita'],
+                    'meta_title' => $values['title_ita'],
+                    'language' => 'it',
+                    'slug' => Str::plain($values['title_ita']),
+                    'tech_spech' => !empty($values['tech_spec_ita']) ? str_replace('/n','',$values['tech_spec_ita']) : null,
+                    'description' => !empty($values['catchline_ita']) ? strip_tags(str_replace('/n','',$values['catchline_ita'])) : null,
+                    'content' => !empty($values['description_ita']) ? str_replace('/n','',$values['description_ita']) : null,
+                    'size_fit' => !empty($values['size_fit_ita']) ? str_replace('/n','',$values['size_fit_ita']) : null,
+                    'composition' => !empty($values['composition_ita']) ? str_replace('/n','',$values['composition_ita']) : null,
+                    'info_care' => !empty($values['info_care_ita']) ? str_replace('/n','',$values['info_care_ita']) : null,
+                    'meta_title' => !empty($values['tag_title_ita']) ? str_replace(' | Shop | Equestro','',$values['tag_title_ita']) : null,
+                    'meta_description' => !empty($values['meta_desc_ita']) ? str_replace('/n','',$values['meta_desc_ita']) : null,
+                ];
+    
 
-            if(!Db::replace('products_lang',$it)) {
+                //TODO: su import logs fare start subito e end a null se non ha concluso
 
-                Log::error('products_lang',$insert['code'],'Errore inserimento prodotto lingua IT',Db::getInstance()->lastError);
+                if(!Db::replace('products_lang',$it)) {
+
+                    Log::error('products_lang',$insert['code'],'Errore inserimento prodotto lingua IT',Db::getInstance()->lastError);
+
+                }
 
             }
+            
+            if(!empty($values['title_eng'])) {
+            
+                $en = [
+                    'id_products' => $insert['id'],
+                    'title' => $values['title_eng'],
+                    'meta_title' => $values['title_eng'],
+                    'language' => 'en',
+                    'slug' => Str::plain($values['title_eng']),
+                    'tech_spech' => !empty($values['tech_spec_eng']) ? str_replace('/n','',$values['tech_spec_eng']) : null,
+                    'description' => !empty($values['catchline_eng']) ? str_replace('/n','',$values['catchline_eng']) : null,
+                    'content' => !empty($values['description_eng']) ? str_replace('/n','',$values['description_eng']) : null,
+                    'size_fit' => !empty($values['size_fit_eng']) ? str_replace('/n','',$values['size_fit_eng']) : null,
+                    'composition' => !empty($values['composition_eng']) ? str_replace('/n','',$values['composition_eng']) : null,
+                    'info_care' => !empty($values['info_care_eng']) ? str_replace('/n','',$values['info_care_eng']) : null,
+                    'meta_title' => !empty($values['tag_title_eng']) ? str_replace(' | Shop | Equestro','',$values['tag_title_eng']) : null,
+                    'meta_description' => !empty($values['meta_desc_eng']) ? str_replace('/n','',$values['meta_desc_eng']) : null,
+                ];
 
-            $en = [
-                'id_products' => $insert['id'],
-                'title' => $values['title_eng'],
-                'meta_title' => $values['title_eng'],
-                'language' => 'en',
-                'slug' => Str::plain($values['title_eng']),
-                'tech_spech' => !empty($values['tech_spec_eng']) ? str_replace('/n','',$values['tech_spec_eng']) : null,
-                'description' => !empty($values['catchline_eng']) ? str_replace('/n','',$values['catchline_eng']) : null,
-                'content' => !empty($values['description_eng']) ? str_replace('/n','',$values['description_eng']) : null,
-                'size_fit' => !empty($values['size_fit_eng']) ? str_replace('/n','',$values['size_fit_eng']) : null,
-                'composition' => !empty($values['composition_eng']) ? str_replace('/n','',$values['composition_eng']) : null,
-                'info_care' => !empty($values['info_care_eng']) ? str_replace('/n','',$values['info_care_eng']) : null,
-                'meta_title' => !empty($values['tag_title_eng']) ? str_replace(' | Shop | Equestro','',$values['tag_title_eng']) : null,
-                'meta_description' => !empty($values['meta_desc_eng']) ? str_replace('/n','',$values['meta_desc_eng']) : null,
-            ];
+                if(!Db::replace('products_lang',$en)) {
 
-            if(!Db::replace('products_lang',$en)) {
+                    Log::error('products_lang',$insert['code'], 'Errore inserimento prodotto lingua EN',Db::getInstance()->lastError);
 
-                Log::error('products_lang',$insert['code'], 'Errore inserimento prodotto lingua EN',Db::getInstance()->lastError);
+                }
 
             }
 
