@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Kodelines\Abstract;
 
-use Kodelines\App;
+
 use Slim\Exception\HttpNotFoundException;
 use Slim\Exception\HttpMethodNotAllowedException;
 use Kodelines\Interfaces\ControllerInterface;
@@ -166,20 +166,19 @@ abstract class Controller implements ControllerInterface
    * @param array $data
    * @return Response
    */
-  public function response(Response $response, mixed $data = false): Response {
+  public function response(Response $response, mixed $data = false, $status = 200): Response {
 
     if(is_bool($data)) {
-      $data = [];
+      $data = ['result' => $data];
     }
 
     if(is_string($data)) {
       $data = [$data];
     }
 
-
     $response->getBody()->write(Json::encode($data));
 
-    return $response->withStatus(200);
+    return $response->withStatus($status);
 
   }
 

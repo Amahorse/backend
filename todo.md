@@ -26,25 +26,9 @@ SERVER:
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+CHIARIRE: 
+Codici errore esatti refresh token etc
+Tolto cms domain perchè non va nell'interceptor sul backend o configuratore masolo su frontend quindi solo lato server
 
 
 

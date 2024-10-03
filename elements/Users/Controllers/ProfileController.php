@@ -10,7 +10,7 @@ use Kodelines\Helpers\Password;
 use Kodelines\Oauth\User;
 use Kodelines\Oauth\Scope;
 use Kodelines\Oauth\Token;
-use Kodelines\App;
+use Kodelines\Context;
 use Kodelines\Db;
 use Slim\Exception\HttpNotFoundException;
 use Psr\Container\ContainerInterface;
@@ -116,7 +116,10 @@ class ProfileController extends Controller {
             throw new ValidatorException('email_or_password_not_valid');
         }
 
-        if (!User::checkCredentials($this->user[config('token','identifier')], config('token','identifier'), $this->data['old_password'])) {
+        //Prendo da container il parametro di configurazione per l'identificatore
+        $identifier = Context::$parameters['token']['identifier'];
+
+        if (!User::checkCredentials($this->user[$identifier], $identifier, $this->data['old_password'])) {
             throw new ValidatorException('email_or_password_not_valid');    
         }
     
@@ -213,8 +216,8 @@ class ProfileController extends Controller {
         $filters = ['table_name' => 'users', 'table_id' => $this->user['id']];
 
         //Per applicazione blindata a una sola nazione faccio vedere dati sono di quella
-        if(!empty(App::getInstance()->client['id_countries'])) {
-            $filters['id_countries'] = App::getInstance()->client['id_countries'];
+        if(!empty(Context::$store['id_countries'])) {
+            $filters['id_countries'] = Context::$client['id_countries'];
         }
 
         //Modalità lista

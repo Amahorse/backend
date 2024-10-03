@@ -1,7 +1,7 @@
 <?php
 
 use Kodelines\Db;
-use Kodelines\System;
+use Kodelines\Context;
 
 if (!function_exists('config')) {
   /**
@@ -12,13 +12,31 @@ if (!function_exists('config')) {
    * @return mixed False if not found, array if config group, or specific config value.
    */
   function config(string $type, string|bool $value = false): mixed {
-    return !empty(System::$config) ? System::$config->get($type, $value) : false;
+    return !empty(Context::$config) ? Context::$config->get($type, $value) : false;
   }
 }
 
+/**
+ * Retrieves a specific value from the client user context.
+ *
+ * This function checks if the 'client' function does not already exist, and if not,
+ * it defines the 'client' function. The function attempts to retrieve a value from
+ * the user context based on the provided key.
+ *
+ * @param string $value The key to retrieve from the user context.
+ * @return mixed Returns the value associated with the provided key if the client context is not empty, otherwise returns false.
+ */
+if (!function_exists('client')) {
+
+  function client(string $value): mixed {
+    return !empty(Context::$token->client) ? Context::$token->user[$value] : false;
+  }
+}
+
+
 if (!function_exists('dev')) {
   /**
-   * Checks if the system is in development mode.
+   * Checks if the Context is in development mode.
    *
    * @return bool True if in development mode, false otherwise.
    */
@@ -48,23 +66,20 @@ if (!function_exists('user')) {
    * @return mixed False if user not logged in or value not found, otherwise the user value.
    */
   function user(string $value = null, string|bool $sub = false): mixed {
-    if (empty(System::$user)) {
-      return false;
-    }
+
+    $user = Context::$token->user ?? false;
 
     if (!$value) {
-      return System::$user;
+      return $user;
     }
 
-    if (!isset(System::$user[$value])) {
-      return false;
+    $userValue = $user[$value] ?? false;
+
+    if ($sub) {
+      return $userValue[$sub] ?? false;
     }
 
-    if ($sub && !isset(System::$user[$value][$sub])) {
-      return false;
-    }
-
-    return $sub ? System::$user[$value][$sub] : System::$user[$value];
+    return $userValue;
   }
 }
 

@@ -8,6 +8,7 @@ define('_CONTEXT_','cli');
 //Require autoloader
 require_once System::findRoot() . 'vendor/autoload.php';
 
+//TODO: rifare
 App::getInstance()->build()->dispatch();
 
 die();

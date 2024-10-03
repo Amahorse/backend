@@ -5,11 +5,12 @@ declare(strict_types=1);
 
 namespace Kodelines\Oauth\Controllers;
 
+use Kodelines\Context;
 use Kodelines\Oauth\Token;
 use Kodelines\Abstract\Controller;
 use Slim\Exception\HttpBadRequestException;
-use Psr\Http\Message\RequestInterface as Request;
-use Psr\Http\Message\ResponseInterface as Response;
+use Slim\Psr7\Request;
+use Slim\Psr7\Response;
 
 
 class TokenController extends Controller
@@ -30,15 +31,9 @@ class TokenController extends Controller
           throw new HttpBadRequestException($request,'client_id_required');
         }
  
-        $token = Token::generate($this->data['client_id']);
+        Context::$token = new Token($request,['client_id' => $this->data['client_id']]);
 
-        //Per il code flow state è necessario ripassarlo per verifica
-        if(!empty($this->data["state"])) {
-          $token["state"] = $this->data["state"];
-        }
-
-
-        return $this->response($response,$token);
+        return $this->response($response,Context::$token->createResponse());
     }
 
 
@@ -61,14 +56,9 @@ class TokenController extends Controller
           throw new HttpBadRequestException($request,'refresh_token_required');
         }  
 
-        $token = Token::refresh($this->data["client_id"],$this->data['refresh_token']);
-   
-        //Per il code flow state è necessario ripassarlo per verifica
-        if(!empty($this->data["state"])) {
-          $token["state"] = $this->data["state"];
-        }
+        //$token = Token::refresh($this->data["client_id"],$this->data['refresh_token']);
 
- 
+        $token = [];
      
         return $this->response($response,$token);
     }

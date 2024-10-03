@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Kodelines\Helpers;
 
-use Kodelines\App;
 use Kodelines\Helpers\Currencies;
 use Kodelines\Helpers\Price;
 use Kodelines\Error;

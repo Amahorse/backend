@@ -11,8 +11,6 @@ return [
             "it",
             "en"
         ],
-        "client_id" => "xETZNsNHBMiDqLTV.45c19b29012947fa5c8f44c755fe901e.1698312544Z6SY",
-        "client_secret" => "CAY54VNXLFqpccvk.9ba601a09a9834e770f201b3892f2508.1698312544f9V2",
         "administrator" => "info@App.com"
     ],
     "default" => [

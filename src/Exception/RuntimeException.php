@@ -6,7 +6,7 @@ namespace Kodelines\Exception;
 
 use Exception;
 use Throwable;
-use Kodelines\App;
+
 use Kodelines\Log;
 
 class RuntimeException extends Exception

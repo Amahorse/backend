@@ -16,6 +16,7 @@ use Kodelines\Mailer;
 use Kodelines\Abstract\Controller;
 use Kodelines\Exception\ValidatorException;
 use Kodelines\Helpers\Password;
+use Kodelines\Context;
 use Elements\Data\Data;
 use Elements\Users\Users;
 use Kodelines\Interfaces\ModelInterface;
@@ -164,7 +165,7 @@ class UsersController extends Controller {
 
         //TODO: controllo anche tipo utente valido
         if(empty($this->data['type'])) {
-          $this->data['type'] = config('store','type');
+          $this->data['type'] = client('type');
         }
 
         if(!isset($this->data["privacy"])) {
@@ -217,6 +218,8 @@ class UsersController extends Controller {
         
         $this->data = $users->fix($this->data);
 
+        $identifier = Context::$parameters['token']['identifier'];
+
         //TODO: accrocco fatto per massimo, questo non dovrebbe funzionare cosi è l'inverso, dovrebbe esserci un campo per le auth in base al form
         if(!isset($this->data['create_account']) || (isset($this->data['create_account']) && !empty($this->data['create_account']))) {
           
@@ -228,8 +231,8 @@ class UsersController extends Controller {
               throw new HttpBadRequestException($request,'password_different');
           }
 
-          if(empty($this->data[config('token','identifier')])) {
-              throw new HttpBadRequestException($request,config('token','identifier') . ' ' . 'is_required');
+          if(empty($this->data[$identifier])) {
+              throw new HttpBadRequestException($request,$identifier . ' ' . 'is_required');
           }
 
           $this->data['auth'] = Scope::code('not_confirmed');

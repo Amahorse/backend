@@ -40,7 +40,7 @@ class Config
      */
 
     public $reserved = [
-        "app" => ["client_secret","administrator","cache","cache_expire_time","development_mode","client_id"],
+        "app" => ["administrator","cache","cache_expire_time","development_mode"],
         "token",
         "db",
         "domains",
@@ -90,8 +90,6 @@ class Config
                 "cache" => true,
                 "cache_expire_time" => 86400, //1 Day
                 "development_mode" => true,
-                "client_id" => '',
-                "client_secret" => '',
                 "administrator" => "webmail@kodelines.com",
                 "cdn" => "/",
                 "languages" => ["it","en"] //Può essere array multiplo, se non trovata lingua attiva nel browser prende quella del gruppo default, ci va sempre messa per le lingue gestite da backend sulle tab contenuti, poi possono essere specificate quelle da attivare sul dominio specifico  
@@ -134,12 +132,6 @@ class Config
                     "timezone" => "America/Los_Angeles"
                 ],
             ],
-            "token" => [
-                "expire_time" => "24 hours",
-                "identifier" => "email",
-                "scopes" => ["user","administrator","superadministrator"],
-                "algorithm" => "HS256"
-            ],
             "dir" => [
                 "logs" => _DIR_LOGS_,
                 "uploads" => _DIR_UPLOADS_ //la directory uploads è definita su system start ma viene chiamata con la funzione _DIR_UPLOADS_ perchè può essere customizzata da questo parametro
@@ -174,14 +166,8 @@ class Config
 
         foreach(Folder::read(_DIR_ELEMENTS_) as $element) {
 
-            if(file_exists(_DIR_ELEMENTS_ . $element . '/Config.php')) {
-
-                $config = require(_DIR_ELEMENTS_ . $element . '/Config.php');
-
-                if(is_array($config)) {
-                    $default = array_replace_recursive($default,$config);
-                }
-   
+            if($config = self::getFile($element)) {
+                $default = array_replace_recursive($default,$config);
             }
 
         }
@@ -229,12 +215,6 @@ class Config
         //Parso con lo stesso loop configurazioni di default per non avere variabili indefinite 
         $this->values = array_replace_recursive($this->default(), $this->values);
  
-        //Il client può definire le impostazioni dello store
-        if(!empty(App::getInstance()->client)) {
-            $this->values['store'] = array_merge($this->values['store'], App::getInstance()->client);   
-        } 
-     
-        //Se non faccio questo da errore per il config 
 
         return $this;
     }
@@ -254,11 +234,13 @@ class Config
 
         //Ritorna configurazioni di default se non esiste file configurazione
         if (!file_exists($file) || !$this->custom = require($file)) {
-            throw new Error(_DIR_CONFIG_ . 'config.php file is not well formatted');
+            throw new Error($file . ' file is not well formatted');
         }
      
         return $this->generate();
     }
+
+
 
 
     /**
@@ -371,4 +353,30 @@ class Config
 
         return $this;
     }
+
+
+    /**
+     *  Prende il file di configurazione di una app
+     *
+     * @method get
+     * @param  string         $app  Application folder
+     * @return array         multiple array with all config types
+     */
+    public function getFile(string $element): array|bool
+    {
+
+        if(file_exists(_DIR_ELEMENTS_ . $element . '/Config.php')) {
+
+            $config = require(_DIR_ELEMENTS_ . $element . '/Config.php');
+
+            if(is_array($config)) {
+                return $config;
+            }
+
+        }
+
+        return false;
+
+    }
+
 }

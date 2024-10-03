@@ -4,42 +4,20 @@ declare(strict_types=1);
 
 namespace Kodelines\Oauth;
 
-use Kodelines\App;
-use Elements\Stores\Stores;
-use Psr\Http\Message\ServerRequestInterface as Request;
+use Kodelines\Context;
+use Slim\Psr7\Request;
 use Slim\Exception\HttpForbiddenException;
-use Slim\Exception\HttpUnauthorizedException;
-use DI\Container;
 
 class Server
 {
-
-
-
-    /**
-     * Contiene
-     */
-    public $client = [];
     
     /**
      * Costruisce parametri oauth server in base a 
      */
-    public function __construct(Request $request, array $arguments, Container $container) {
+    public function __construct(Request $request, array $arguments) {
 
-        /**
-         * Definisco il token inviato come costante
-         */
-        define('_OAUTH_TOKEN_',$arguments["token"]);
+        Context::$token = new Token($request,$arguments);
 
-        /**
-         * Definisco il token jti
-         */
-        define('_OAUTH_TOKEN_JTI_',$arguments['decoded']['jti']);
-
-        /**
-         * Definisco il client id
-         */
-        define('_OAUTH_CLIENT_ID_',$arguments['decoded']['aud']);
 
 
 
@@ -51,12 +29,15 @@ class Server
         if(!empty($arguments['decoded']['sub'])) {
   
             //Utente non più valido 
+            /*
             if(!$user = User::isValid($arguments)) {
 
                 //Codice 403
                 throw new HttpForbiddenException($request,'User not Found');
             } 
 
+            /*
+            TODO: da rifare insieme a auth middleware
             //Il token è valido ma l'utente non ha scope per accedere come utente ad applicazione corrente
             if(!in_array(Scope::name($user["auth"]),config('token','scopes'))) {    
             
@@ -71,50 +52,57 @@ class Server
                 //Codice 401
                 throw new HttpUnauthorizedException($request,'Scope not valid');
             }
+                */
 
-            $container->set('user',$user);
     
         } else {
-
+            /*
             //Se il token non è più valido va chiesto un nuovo refresh token
             if(!defined('_BOT_DETECTED_') && !Token::isValid($arguments["token"],$arguments['decoded']['aud'])) {
 
                 //Codice 403
                 throw new HttpForbiddenException($request,'Token revoked');
             }
+            */
 
         }
 
 
  
         //Recupero eventuale store da client kid
-        if(!empty($arguments['decoded']['kid']) && App::getInstance()->client = Stores::getByKid($arguments['decoded']['kid'])) { 
+        /*
+        if(!empty($arguments['decoded']['kid']) && $store = Stores::getByKid($arguments['decoded']['kid'])) { 
   
-            define('_ID_STORES_',id(App::getInstance()->client['id_stores']));
+            define('_ID_STORES_',id($store['id']));
+
+            $container->set('client',$store);
             
         } else {
 
             //ID STORE su header ha minore priorità rispetto a quello del token
-            if((App::getInstance()->clientHeader = $request->getHeaderLine("X-IdStores")) && App::getInstance()->clientHeader !== 'false' && !empty(id(App::getInstance()->clientHeader))) {
+            if(($storeHeader = $request->getHeaderLine("X-IdStores"))  && !empty($storeHeader)) {
                         
-                define('_ID_STORES_',id(App::getInstance()->clientHeader));
+                define('_ID_STORES_',id($storeHeader));
 
-                App::getInstance()->config->set('store','id_stores',id(App::getInstance()->clientHeader));
-                
-
-            } elseif(($storeDefault = config('store','id_stores',true)) && $storeDefault !== 'false') {
+            } elseif(($storeDefault = client('id_stores')) && $storeDefault !== 'false') {
 
                 define('_ID_STORES_',id($storeDefault));
+
             }
 
-            if(defined('_ID_STORES_') && !App::getInstance()->client = Stores::get(_ID_STORES_,['id_resellers' => false])) {
-                //Codice 403
-                throw new HttpForbiddenException($request,'Store not found');
+            //TODO: questo va visto se è ancora necessario
+            if(defined('_ID_STORES_')) {
+
+                if(!$store = Stores::get(_ID_STORES_)) {
+                    throw new HttpForbiddenException($request,'Store not found');
+                } else {
+                    $container->set('client',$store);
+                }
             }
 
         }
 
-     
+        */
 
         /** 
          * Prima hanno la priorità i valori settati su header, poi quelli dello store, poi quelli di default, una volta controllati questi sul before del jwtAuthentication 
@@ -122,10 +110,12 @@ class Server
          **/
 
         //CLIENT TYPE B2C B2B HORECA
+        //TODO: capir se invece di config set va fatto qualcos'altro
+        /*
         if(($clientHeader = $request->getHeaderLine("X-ClientType"))  && !empty($clientHeader)) {
             
             define('_CLIENT_TYPE_',$clientHeader);
-
+            
             App::getInstance()->config->set('store','type',$clientHeader);
 
         } elseif(!empty(App::getInstance()->client['type'])) {
@@ -134,13 +124,13 @@ class Server
 
             App::getInstance()->config->set('store','type',App::getInstance()->client['type']);
 
-        } elseif($clientDefault = config('store','type',true)) {
+        } elseif($clientDefault = client('type',true)) {
 
             define('_CLIENT_TYPE_',$clientDefault);
         }
-
+        */
       
-
+        /*
         //ID RESELLER
         if(($resellerHeader = $request->getHeaderLine("X-IdResellers")) && $resellerHeader !== 'false' && !empty(id($resellerHeader))) { 
 
@@ -154,7 +144,7 @@ class Server
 
             App::getInstance()->config->set('store','id_resellers',id(App::getInstance()->client['id_resellers']));
 
-        } elseif(($resellerDefault = config('store','id_resellers',true)) && $resellerDefault !== 'false') {
+        } elseif(($resellerDefault = client('id_resellers',true)) && $resellerDefault !== 'false') {
 
             define('_ID_RESELLERS_',id($resellerDefault));
         }
@@ -172,7 +162,7 @@ class Server
 
             App::getInstance()->config->set('store','id_agents',id(App::getInstance()->client['id_agents']));
 
-        } elseif(($agentDefault = config('store','id_agents',true)) && $agentDefault !== 'false') {
+        } elseif(($agentDefault = client('id_agents',true)) && $agentDefault !== 'false') {
 
             define('_ID_AGENTS_',id($agentDefault));
         }
@@ -193,13 +183,13 @@ class Server
             define('_ID_COUNTRIES_',id($countryDefault));
             
         }
-
+            */
         
         //DOMINIO 
         if($domainHeader = $request->getHeaderLine("X-Domain")) {
             define('_APP_DOMAIN_',$domainHeader);
         }
-
+        
 
     }
 

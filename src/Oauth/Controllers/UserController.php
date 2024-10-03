@@ -36,8 +36,11 @@ class UserController extends Controller
           throw new HttpBadRequestException($request,'client_id_required');
         }
 
+        //Prendo da container il parametro di configurazione per l'identificatore
+        $identifier = Context::$parameters['token']['identifier'];
+
         //Controllo se identificatore utente (email o userame è presente) o password è presente
-        if(empty($this->data[config('token','identifier')])) {
+        if(empty($this->data[Context::$parameters['token']['identifier']])) {
           throw new HttpBadRequestException($request,'missing_username');
         }
 
@@ -45,7 +48,7 @@ class UserController extends Controller
           throw new HttpBadRequestException($request,'missing_password');
         }
 
-        if(!$user = User::checkCredentials($this->data[config('token','identifier')],config('token','identifier'),$this->data['password'])) {
+        if(!$user = User::checkCredentials($this->data[$identifier],$identifier,$this->data['password'])) {
           throw new HttpUnauthorizedException($request,'wrong_credentials');
         }
 

@@ -30,7 +30,7 @@ class StoreModel extends Model {
     if(user('id_stores')) {
       $id_stores = user('id_stores');
     } else {
-      $id_stores = config('store','id_stores');
+      $id_stores = client('id_stores');
     }
 
     

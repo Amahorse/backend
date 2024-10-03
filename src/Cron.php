@@ -8,6 +8,7 @@ namespace Kodelines;
 use \GO\Scheduler;
 use InvalidArgumentException;
 
+
 class Cron
 {
 
@@ -17,16 +18,14 @@ class Cron
     // Create a new scheduler
     $scheduler = new Scheduler();
 
-    $config = new Config();
-
-    App::getInstance()->config = $config;
+    Context::$config = new Config();
 
     define('_SCRIPT_RUNNER_', _DIR_PUBLIC_ . 'cli/run');
 
     // ... configure the scheduled jobs (see below) ...
     if(!empty($config->values['domains'])) {
 
-        foreach($config->values['domains'] as $domain => $values) {
+        foreach(Context::$config->values['domains'] as $domain => $values) {
             
             if(empty($values['cron'])) {
                 continue;

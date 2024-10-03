@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Kodelines\Controllers;
 
-use Kodelines\App;
+
 use Kodelines\Helpers\Countries;
 use Kodelines\Abstract\Controller;
 use Psr\Http\Message\RequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
+use Kodelines\Context;
 
 class CountriesController extends Controller
 {
@@ -17,8 +18,8 @@ class CountriesController extends Controller
     {   
 
         //Per applicazione blindata a una sola nazione faccio vedere in lista select solo quella
-        if(!empty(App::getInstance()->client['id_countries'])) {
-            return $this->response($response,[Countries::get(App::getInstance()->client['id_countries'])]);
+        if(!empty(Context::$store['id_countries'])) {
+            return $this->response($response,[Countries::get(Context::$store['id_countries'])]);
         }
 
         return $this->response($response,Countries::list());

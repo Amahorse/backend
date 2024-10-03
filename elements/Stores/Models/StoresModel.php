@@ -14,7 +14,7 @@ class StoresModel extends Model {
 
   public $uploads = ["image"];
 
-  public $this->defaults = [];
+  public $defaults = [];
 
   public $validator = [
     "email" => ["email"],

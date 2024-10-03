@@ -98,7 +98,7 @@ class Date {
 			$days = (int)$days -1;
 		}
 
-		$holidays = config('store','holidays');
+		$holidays = client('holidays');
 
 		$year = date('Y', strtotime($date));
 

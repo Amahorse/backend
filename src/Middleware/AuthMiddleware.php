@@ -11,7 +11,7 @@ use Psr\Http\Server\MiddlewareInterface;
 use Slim\Psr7\Response;
 use Slim\Exception\HttpForbiddenException;
 
-
+//TODO: da rifare tutta con scopes e ruoli
 /**
  * Slim 4 Base path middleware.
  */
@@ -35,7 +35,7 @@ class AuthMiddleware implements MiddlewareInterface
     {
         //TODO: Le scopes dei token sono array enum
         //di default gli scope sono su config
-        $this->scopes = config('token','scopes');
+        //$this->scopes = config('token','scopes');
 
         //Array vuol dire solo quelli sono accettati
         if(!empty($args) && is_array($args)) {

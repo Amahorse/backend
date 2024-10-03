@@ -4,20 +4,13 @@ declare(strict_types=1);
 
 namespace Kodelines\Oauth;
 
-use Kodelines\Key;
 use Kodelines\Db;
+use Kodelines\Helpers\Cache;
+use Elements\Clients\Clients;
 
 class Client
 {
-     /**
-     * Torna client
-     *
-     * @param int id
-     * @return boolean|string
-     */
-    public static function get(int $id): bool|array {
-        return Db::getRow("SELECT * FROM oauth_clients WHERE id = " . id($id));
-    }
+
 
     /**
      * Torna client secret per client id
@@ -25,63 +18,58 @@ class Client
      * @param string $client_id
      * @return boolean|string
      */
-    public static function check(string $client_id, $active = false): bool|array {
-
-        $query = "SELECT * FROM oauth_clients WHERE client_id = " .encode($client_id);
-
-        if($active) {
-            $query  .= " AND status = 1";
-        }
-    
-        return Db::getRow($query);
+    public static function get(string $client_id): bool|array {
+      return Db::getRow(Clients::query(['client_id' => $client_id,'status' => 1]));
     }
-  
-    /**
-     * Genera cliet_id, client_secret e token
-     *
-     * @param array $store
-     * @return array
-     */
-    public static function generate():array
-    {
-        
-        $token = [
-            'client_id' => Key::generate(),
-            'client_secret' => Key::generate()
-        ];
 
-        return $token;
-        
-    }
 
     /**
      * Lista dei client abilitati
      *
      * @return array
      */
-    public static function getKids():array
+    public static function getKids():string|array
     {
 
-       //TODO: mettere in cache
+
+       if($clients = Cache::getInstance()->getArray('oauth_clients')) {
+          return $clients;
+       }
+
        $clients = [];
 
        foreach(Db::getArray("SELECT * FROM oauth_clients WHERE status = 1") as $client) {
           $clients[$client['kid']] = $client['client_secret'];
        }
 
+
+       Cache::getInstance()->setArray($clients,'oauth_clients');
+
        return $clients;
         
     }
 
-
-    /**
+        /**
      * Lista dei client abilitati
      *
      * @return array
      */
-    public static function list():array
+    public static function getAllowedOrigins(string $client_id):array
     {
-       return Db::getArray("SELECT oauth_clients.*, stores.name FROM oauth_clients LEFT JOIN stores ON stores.id = oauth_clients.id_stores");   
+
+       if($origins = Cache::getInstance()->getArray('oauth_origins_' . $client_id)) {
+          return $origins;
+       }
+
+       $origins = Db::getArray("SELECT * FROM oauth_clients WHERE id_oauth_clients = " . id($client_id));
+
+       Cache::getInstance()->setArray($origins,'oauth_origins_' . $client_id);
+
+       return $origins;
+        
     }
+
+
+
 
 }

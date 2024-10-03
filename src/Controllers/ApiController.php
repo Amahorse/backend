@@ -12,6 +12,11 @@ use Psr\Http\Message\ResponseInterface as Response;
 class ApiController extends Controller
 {
 
+    public function empty(Request $request, Response $response, array $args) : Response
+    {   
+        return $this->response($response,false,400);
+    }
+
     public function preflight(Request $request, Response $response, array $args) : Response
     {   
         return $this->response($response,true);

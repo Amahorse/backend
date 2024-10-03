@@ -45,6 +45,8 @@ use Kodelines\Tools\Folder;
 
 return function (Slim $app) {
 
+    //Empty call to all routes
+    $app->any('/', \Kodelines\Controllers\ApiController::class . ':empty')->setName('api.empty');
 
     //Options call to all routes
     $app->options('[/{params:.*}]', \Kodelines\Controllers\ApiController::class . ':preflight')->setName('api.preflight');
@@ -78,8 +80,6 @@ return function (Slim $app) {
     $app->post('/oauth/login', \Kodelines\Oauth\Controllers\UserController::class . ':login')->setName('oauth.login');
 
     $app->post('/oauth/logout', \Kodelines\Oauth\Controllers\UserController::class . ':logout')->setName('oauth.logout');
-
-    $app->post('/oauth/clients', \Kodelines\Oauth\Controllers\ClientController::class . ':create')->setName('oauth.client.create')->add(new AuthMiddleware('administrator'));
 
     $app->post('/oauth/check', \Kodelines\Oauth\Controllers\UserController::class . ':check')->setName('oauth.check');
 

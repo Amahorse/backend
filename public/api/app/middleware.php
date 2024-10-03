@@ -3,7 +3,6 @@
 use Slim\App as Slim;
 use Kodelines\Middleware\ApiMiddleware;
 use Tuupola\Middleware\JwtAuthentication;
-use Slim\Psr7\Response;
 use Kodelines\Oauth\Server;
 use Kodelines\Oauth\Client;
 use Kodelines\Tools\Domain;
@@ -17,31 +16,24 @@ return function (Slim $app) {
         "secure" => Domain::isSecure(),
         "rules" => [
             new Tuupola\Middleware\JwtAuthentication\RequestPathRule([
-                "ignore" => [
+                "path" => [
                     "/"
                 ],
-          
+                "ignore" => [
+                    "/oauth/token",
+                    "/docs",
+                    "/test"
+                ]
             ]),
             new Tuupola\Middleware\JwtAuthentication\RequestMethodRule([
                 "ignore" => ["OPTIONS"],
             ])
         ],
-        "before" => function ($request, $arguments, $app)  {
-           
-            try {
-          
-                //Istanzio nuovo oauth server con le variabili del token
-                new Server($request, $arguments, $app->getContainer());
+        "before" => function ($request, $arguments)  {
+ 
+            //Istanzio nuovo oauth server con le variabili del token
+            new Server($request, $arguments);
 
-
-            } catch (Throwable $e) { 
-
-                $response = new Response();
-
-                return $response->withStatus($e->getCode());
-  
-            }
-            
         },
         "error" => function ($response, $arguments) {
   

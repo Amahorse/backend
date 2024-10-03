@@ -3,10 +3,11 @@
 
 declare(strict_types=1);
 
-namespace Kodelines\Oauth\Controllers;
+namespace Elements\Clients\Controllers;
 
+use Kodelines\Helpers\Cache;
+use Elements\Clients\Clients;
 use Kodelines\Db;
-use Kodelines\Oauth\Client;
 use Kodelines\Abstract\Controller;
 use Kodelines\Tools\Str;
 use Elements\Stores\Stores;
@@ -15,7 +16,7 @@ use Psr\Http\Message\RequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
 
-class ClientController extends Controller
+class ClientsController extends Controller
 {
 
   public function create(Request $request, Response $response) : Response {
@@ -34,12 +35,13 @@ class ClientController extends Controller
 
     }
 
-    $client = array_merge(Client::generate(),$this->data);
+    $client = array_merge(Clients::generate(),$this->data);
 
     if(!$client['id'] = Db::insert('oauth_clients',$client)) {
       throw new HttpBadRequestException($request,'database_error');
     }
 
+    Cache::getInstance()->delete('oauth_clients');
 
     return $this->response($response,true);
 
@@ -48,12 +50,21 @@ class ClientController extends Controller
 
   public function update(Request $request, Response $response, $args) : Response {
 
-  
+    Cache::getInstance()->delete('oauth_clients');
 
-    return $this->response($response,true);
+    Cache::getInstance()->delete('oauth_origins_' . $args['id']);
+
+    return $this->response($response,parent::update($request,$response,$args));
 
   }
 
+  public function delete(Request $request, Response $response, $args) : Response {
+
+    Cache::getInstance()->delete('oauth_clients');
+
+    return $this->response($response,parent::delete($request,$response,$args));
+
+  }
 
 
 }

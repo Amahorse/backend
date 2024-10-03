@@ -24,10 +24,6 @@ class System
   const VERSION = '1.0';
 
 
-  public static Config $config;
-
-  public static $user;
-
   /**
    * Trova la root del sistema. funziona solo se messo dentro cartella apps/
    *
@@ -114,8 +110,23 @@ class System
 
     $containerBuilder = new ContainerBuilder();
 
-    self::$config = new Config();
+    Context::$config = new Config();
+
+    Context::$parameters = require getcwd() . '/app/parameters.php';
     
+    if(dev()) {
+
+      error_reporting(E_ALL);
+
+      ini_set('display_errors', '1');
+
+    } else {
+
+      error_reporting(0);
+
+      ini_set('display_errors', '0');
+    }
+ 
 
     // Set up settings
     $containerBuilder->addDefinitions([
@@ -123,8 +134,9 @@ class System
           'addContentLengthHeader' => false,
           'determineRouteBeforeAppMiddleware' => true
       ],
-      'config' => self::$config,
 
+
+      //Create Container 
       App::class => function (ContainerInterface $container) {
   
           $app = AppFactory::createFromContainer($container);
@@ -143,14 +155,15 @@ class System
           // Register middleware
           (require getcwd() . '/app/middleware.php')($app);
   
-  
+          
           return $app;
         }
       ]);
     
     // Build PHP-DI Container instance
     $container = $containerBuilder->build();
-    
+  
+
     return $container->get(App::class)->run();
   }
   
