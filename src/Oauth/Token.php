@@ -8,10 +8,12 @@ use DateTime;
 
 use Kodelines\Context;
 use Kodelines\Key;
+use Kodelines\Db;
 use Kodelines\Tools\Domain;
 use Firebase\JWT\JWT;
 use Slim\Psr7\Request;
 use Slim\Exception\HttpBadRequestException;
+use Slim\Exception\HttpUnauthorizedException;
 
 class Token
 {
@@ -53,7 +55,7 @@ class Token
  
   }
 
-  public function generate(string $client_id) {
+  public function generate(string $client_id): void{
 
     if (!Key::isValid($client_id)) {
       throw new HttpBadRequestException($this->request,'client_id_not_valid');
@@ -66,6 +68,20 @@ class Token
     $this->payload = $this->createPayload();
 
     $this->token = JWT::encode($this->payload, $this->client['client_secret'], $this->parameters['algorithm'], $this->client['kid']);
+
+    //Inserisco nel db solo se l'utente è presente
+    if(!empty($this->user)) {
+      Db::insert('oauth_tokens',[
+        'client_id' => $this->client['client_id'],
+        'access_token' => $this->token,
+        'refresh_token' => Key::generate(),
+        'id_users' => $this->user['id'],
+        'role' => $this->payload['role'],
+        'scope' => $this->payload['scope'],
+        'issuer' => $this->payload['iss'],
+        'jti' => $this->payload['jti']
+      ]);
+    }
 
   }
 
@@ -103,6 +119,11 @@ class Token
 
     $this->token = $arguments["token"];
 
+    //Controllo utente
+    if(!empty($arguments['decoded']['sub'])) {
+      $this->checkAuth();
+    }
+
   }
 
   private function createPayload($lifetime = false): array
@@ -121,7 +142,7 @@ class Token
       "aud" => $this->client['client_id'],
       "alg" => $this->parameters['algorithm'],
       'iss' => Domain::protocol() . $_SERVER['SERVER_NAME'] . '/oauth/token?client_id=' . $this->client['client_id'],
-      "sub" => !empty($this->user[$this->parameters['identifier']]) ? $this->user[$this->parameters['algorithm']] : null,
+      "sub" => !empty($this->user[$this->parameters['identifier']]) ? $this->user[$this->parameters['identifier']] : null,
       "kid" => $this->client['kid'],
       "role" => !empty($this->user['role']) ? $this->user['role'] : $this->parameters['role'],
       "scope" => !empty($this->user['scope']) ? $this->user['scope'] : $this->parameters['scope'],
@@ -143,25 +164,20 @@ class Token
       "role" => $this->payload['role']
     ];
 
-    
   }
 
-  /*
-  public static function isValid(string $token, string $client_id, $jwtCheck = false): array|bool
+  
+  public function checkAuth()
   {
-    if ($jwtCheck) {
-      try {
-        Jwt::decode($token, self::$client_secret, config('token', 'algorithm'));
-      } catch (Throwable $e) {
-        return false;
-      }
+    //TODO: controllare role utente
+    //TODO: fare authInterceptor per pannello che butta fuori l'utente non autorizzato, trovare il modo di distinguere i vari errori bad request o unauthorized
+    if(!$this->user = Db::getRow("SELECT users.* FROM oauth_tokens JOIN users ON oauth_tokens.id_users = users.id WHERE oauth_tokens.client_id = ".encode($this->client['client_id'])." AND oauth_tokens.access_token = " . encode($this->token))) {
+      throw new HttpUnauthorizedException($this->request);
     }
-
-    return Db::getRow("SELECT jti FROM oauth_tokens WHERE access_token = " . encode($token) . " AND client_id = " . encode($client_id));
   }
 
-  /*
 
+/*
 
   public static function generate(string $client_id, $user = [], $lifetime = false): array
   {

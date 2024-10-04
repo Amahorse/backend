@@ -27,13 +27,7 @@ class StoreModel extends Model {
 
     $language = !empty($filters['language']) ? $filters['language'] : _APP_LANGUAGE_;
 
-    if(user('id_stores')) {
-      $id_stores = user('id_stores');
-    } else {
-      $id_stores = client('id_stores');
-    }
-
-    
+   
     $query = "SELECT 
       store_products.*,
       store_products.id AS id_store_products,
@@ -67,8 +61,8 @@ class StoreModel extends Model {
           JOIN products ON store_products.id_products = products.id
           JOIN products_lang ON products_lang.id_products = products.id AND products_lang.language = ".encode($language)."
           JOIN store_products_availability ON store_products_availability.id_store_products = store_products.id
-          JOIN store_products_prices ON store_products_prices.id_store_products = store_products.id AND store_products_prices.id_stores = ". id($id_stores) ."
-          JOIN stores ON stores.id = ". id($id_stores) ."
+          JOIN store_products_prices ON store_products_prices.id_store_products = store_products.id AND store_products_prices.id_stores = ". _ID_STORES_ ."
+          JOIN stores ON stores.id = ". _ID_STORES_ ."
           LEFT JOIN brands ON brands.id = products.id_brands
           LEFT JOIN store_products_discounts ON store_products_discounts.id_store_products = store_products.id AND imported = 1
           LEFT JOIN products_categories ON products_categories.id_products = products.id

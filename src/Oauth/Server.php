@@ -18,7 +18,8 @@ class Server
 
         Context::$token = new Token($request,$arguments);
 
-
+        //Definisco id store
+        define('_ID_STORES_', id(user('id_stores') ?: client('id_stores')));
 
 
         /**

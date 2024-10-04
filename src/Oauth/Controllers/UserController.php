@@ -5,7 +5,7 @@ declare(strict_types=1);
 
 namespace Kodelines\Oauth\Controllers;
 
-
+use Kodelines\Context;
 use Slim\Exception\HttpUnauthorizedException;
 use Slim\Exception\HttpBadRequestException;
 use Psr\Http\Message\RequestInterface as Request;
@@ -52,9 +52,13 @@ class UserController extends Controller
           throw new HttpUnauthorizedException($request,'wrong_credentials');
         }
 
-        $token = Token::generate($this->data["client_id"],$user, isset($this->data['remember']));
+        $token = new Token($request);
 
-        return $this->response($response,$token);
+        $token->user = $user;
+
+        $token->generate($this->data["client_id"]);
+
+        return $this->response($response,$token->createResponse());
 
     }
 

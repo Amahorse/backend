@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kodelines\Oauth;
 
 use Kodelines\Db;
+use Kodelines\Error;
 use Kodelines\Helpers\Cache;
 use Elements\Clients\Clients;
 
@@ -26,24 +27,30 @@ class Client
     /**
      * Lista dei client abilitati
      *
-     * @return array
+     * @return mixed
      */
-    public static function getKids():string|array
+    public static function getKids():mixed
     {
 
 
-       if($clients = Cache::getInstance()->getArray('oauth_clients')) {
-          return $clients;
+       if(!$clients = Cache::getInstance()->getArray('oauth_clients')) {
+
+         $clients = [];
+
+         foreach(Db::getArray("SELECT * FROM oauth_clients WHERE status = 1") as $client) {
+            $clients[$client['kid']] = $client['client_secret'];
+         }
+  
+         Cache::getInstance()->setArray($clients,'oauth_clients');
        }
 
-       $clients = [];
-
-       foreach(Db::getArray("SELECT * FROM oauth_clients WHERE status = 1") as $client) {
-          $clients[$client['kid']] = $client['client_secret'];
+       if(count($clients) == 0) {
+          return new Error('No clients found');
        }
 
-
-       Cache::getInstance()->setArray($clients,'oauth_clients');
+       if(count($clients) == 1) {
+          return array_values($clients)[0];
+       }
 
        return $clients;
         

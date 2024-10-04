@@ -36,6 +36,8 @@ class User
             return false;
         }
 
+        //TODO: controllare role utente
+
         return $user;
     }
 

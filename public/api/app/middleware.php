@@ -20,9 +20,7 @@ return function (Slim $app) {
                     "/"
                 ],
                 "ignore" => [
-                    "/oauth/token",
-                    "/docs",
-                    "/test"
+                    "/oauth/token"
                 ]
             ]),
             new Tuupola\Middleware\JwtAuthentication\RequestMethodRule([
@@ -30,13 +28,14 @@ return function (Slim $app) {
             ])
         ],
         "before" => function ($request, $arguments)  {
- 
+   
             //Istanzio nuovo oauth server con le variabili del token
             new Server($request, $arguments);
 
         },
         "error" => function ($response, $arguments) {
-  
+            
+            //TODO: gestire errore token scaduto
             return $response->withStatus(401);
    
         }
