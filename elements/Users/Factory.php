@@ -57,6 +57,7 @@ class Factory implements FactoryInterface
 
       $profile->get('', \Elements\Users\Controllers\ProfileController::class . ':get')->setName('profile.get');
 
+      /*
       $profile->put('', \Elements\Users\Controllers\ProfileController::class . ':update')->setName('profile.update');
   
       $profile->put('/password', \Elements\Users\Controllers\ProfileController::class . ':password')->setName('profile.password.update');
@@ -74,7 +75,7 @@ class Factory implements FactoryInterface
       $profile->get('/orders', \Elements\Users\Controllers\ProfileController::class . ':orders')->setName('profile.orders.list');
 
       $profile->get('/orders/{id}', \Elements\Users\Controllers\ProfileController::class . ':orders')->setName('profile.orders.get');
-
+      */
 
     })->add(new AuthMiddleware("not_confirmed"));
 

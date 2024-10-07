@@ -22,7 +22,7 @@ class Token
 
   public array $client;
 
-  public array $user;
+  public array|false $user;
 
   public array $payload;
 
@@ -71,7 +71,8 @@ class Token
 
     //Inserisco nel db solo se l'utente è presente
     if(!empty($this->user)) {
-      Db::insert('oauth_tokens',[
+
+      $database = [
         'client_id' => $this->client['client_id'],
         'access_token' => $this->token,
         'refresh_token' => Key::generate(),
@@ -80,7 +81,14 @@ class Token
         'scope' => $this->payload['scope'],
         'issuer' => $this->payload['iss'],
         'jti' => $this->payload['jti']
-      ]);
+      ];
+
+      if(defined('_OAUTH_TOKEN_JTI_')) {
+        Db::replace('oauth_tokens',$database);
+      } else {
+        Db::insert('oauth_tokens',$database);
+      }
+
     }
 
   }

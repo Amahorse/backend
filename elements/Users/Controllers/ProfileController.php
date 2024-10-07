@@ -13,7 +13,8 @@ use Kodelines\Oauth\Token;
 use Kodelines\Context;
 use Kodelines\Db;
 use Slim\Exception\HttpNotFoundException;
-use Psr\Container\ContainerInterface;
+use Slim\Exception\HttpForbiddenException;
+use DI\Container;
 use Psr\Http\Message\RequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Elements\Data\Data;
@@ -33,13 +34,20 @@ class ProfileController extends Controller {
         "hash",
         "password",
         "password_repeat",
-        "sdi_code",
-        "pec",
-        "iban",
-        "bic",
-        "swift",
-        "bank_name",
-        "bank_account"
+        "date_ins",
+        "date_update",
+        "discount_client_percentage",
+        "discount_contract_percentage",
+        "discount_final_percentage",
+        "id",
+        "id_gamma",
+        "id_stores",
+        "language",
+        "role",
+        "scope",
+        "website",
+        "website_ecommerce",
+        "website_type"
       ];
   
 
@@ -49,21 +57,20 @@ class ProfileController extends Controller {
     /**
      * In questa classe vengono recuperati i dati del profilo, se non è utente loggato torna errore
      * 
-     * @param ContainerInterface $container
+     * @param Container $container
      */
-    public function __construct(ContainerInterface $container) {
+    public function __construct(Container $container) {
 
         parent::__construct($container);
 
         if(!user()) {
-            throw new RuntimeException('access_denied');
+            throw new HttpForbiddenException($container->get('request'),'access_denied');
         }
 
         if(!$this->user = Users::get(user('id'))) {
-            throw new RuntimeException('not_found');
+            throw new HttpForbiddenException($container->get('request'),'access_denied');
         }
-
-        $this->user['scope'] = Scope::name($this->user['auth']);
+        
     }
 
     /**
@@ -79,15 +86,8 @@ class ProfileController extends Controller {
         return $this->response($response,$this->parse($this->user));
 
     }
-
-    /**
-     * Modifica utente
-     *
-     * @param Request $request
-     * @param Response $response
-     * @param array $args
-     * @return Response
-     */
+    
+    /*
     public function update(Request $request, Response $response, array $args) : Response
     {
 
@@ -97,14 +97,7 @@ class ProfileController extends Controller {
         return $this->response($response,$this->parse($user));
     }
 
-    /**
-     * Modifica password utente 
-     *
-     * @param Request $request
-     * @param Response $response
-     * @param array $args
-     * @return Response
-     */
+
     public function password(Request $request, Response $response) : Response
     {
 
@@ -139,14 +132,7 @@ class ProfileController extends Controller {
         return $this->response($response,true);
     }
 
-       /**
-     * Crea password per utente provvisorio 
-     *
-     * @param Request $request
-     * @param Response $response
-     * @param array $args
-     * @return Response
-     */
+
     public function setupPassword(Request $request, Response $response) : Response
     {
 
@@ -178,14 +164,6 @@ class ProfileController extends Controller {
 
 
 
-    /**
-     * Gestione dati di spedizione
-     *
-     * @param Request $request
-     * @param Response $response
-     * @param array $args
-     * @return Response
-     */
     public function data(Request $request, Response $response,array $args) : Response {
 
         //Modalità modifica/elimina
@@ -232,14 +210,6 @@ class ProfileController extends Controller {
     }
 
 
-    /**
-     * Recupero ordini
-     *
-     * @param Request $request
-     * @param Response $response
-     * @param array $args
-     * @return Response
-     */
     public function orders(Request $request, Response $response,array $args) : Response {
 
         //Modalità modifica/elimina
@@ -274,5 +244,7 @@ class ProfileController extends Controller {
         return $this->response($response,$data);
 
     }
+
+    */
 
 }
