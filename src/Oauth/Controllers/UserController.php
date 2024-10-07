@@ -12,10 +12,7 @@ use Psr\Http\Message\RequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Kodelines\Oauth\Token;
 use Kodelines\Oauth\User;
-use Kodelines\Oauth\Scope;
 use Kodelines\Abstract\Controller;
-use Elements\Users\Users;
-
 
 class UserController extends Controller
 {
@@ -73,67 +70,20 @@ class UserController extends Controller
     public function logout(Request $request, Response $response, array $args) : Response
     {   
 
-        if(!Token::revoke(_OAUTH_TOKEN_, _OAUTH_CLIENT_ID_)) {
-          throw new HttpUnauthorizedException($request,'wrong_credentials');
-        }
-
-        return $this->response($response,Token::generate(_OAUTH_CLIENT_ID_, []));
-
-    }
-
-
-
-    /**
-     * Fa check autorizzazione email
-     *
-     * @param Request $request
-     * @param Response $response
-     * @param array $args
-     * @return Response
-     */
-    public function check(Request $request, Response $response) : Response
-    {   
-      return $this->response($response,$this->checkAuth($request));
-    }
-
-    /**
-     * Fa check autorizzazione email
-     *
-     * @param Request $request
-     * @return Bool
-     */
-    private function checkAuth(Request $request):array|bool {
-
-        //Questi sono controlli diversi da backend perchè deve restituire messaggi di errori più precisi e rimandare a pagine diverse
-        if($check = Users::where('email',$this->data['email'])) {
-
-          //Utente che ha già effettuato registrazione ma non ha confermato
-          if($check['auth'] == Scope::code('not_confirmed')) {
-            throw new HttpBadRequestException($request,'user_not_confirmed');
-          }
-  
-          //Utente che si è già registrato ma non ha confermato
-          if($check['auth'] == Scope::code('banned')) {
-            throw new HttpBadRequestException($request,'user_banned');
-          }
-  
-          //Utente che ha iniziato checkoiyt ma non ha finito l'ordine o utente eliminato è come se non esistesse, lo aggiorno
-          if($check['auth'] == Scope::code('provisional') || $check['auth'] == Scope::code('inactive')) {
-
-            $this->data['id'] = $check['id'];
-
-          } else {
-            //Altro caso all'infuori di questo è utente già esistente
-            throw new HttpBadRequestException($request,'user_exists');
-
-          }
-  
-  
+      if(!defined('_OAUTH_TOKEN_') && !defined('_OAUTH_CLIENT_ID_')) {
+        throw new HttpBadRequestException($request,'token_required');
       }
 
-      return $check;
+      if(!Token::revoke(_OAUTH_TOKEN_, _OAUTH_CLIENT_ID_)) {
+        throw new HttpUnauthorizedException($request,'wrong_credentials');
+      }
+
+      Context::$token = new Token($request,['client_id' => _OAUTH_CLIENT_ID_]);
+
+      return $this->response($response,Context::$token->createResponse());
 
     }
+
 
 
 }

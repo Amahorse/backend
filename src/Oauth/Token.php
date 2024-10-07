@@ -2,6 +2,18 @@
 
 declare(strict_types=1);
 
+/* 
+ * Token
+ * 
+ * Classe per la gestione dei token
+ * 
+ * @package Kodelines\Oauth
+ * 
+ * NOTE: attualmente il jti non cambia mai e viene generato una sola volta per client. 
+ * Quindi se un client genera un token e lo rinnova oppure si fa login/logout, il jti rimane lo stesso anche per clienti diversi
+ * 
+*/
+
 namespace Kodelines\Oauth;
 
 use DateTime;
@@ -52,7 +64,6 @@ class Token
       return $this->process($arguments);
     }
 
- 
   }
 
   public function generate(string $client_id): void{
@@ -184,103 +195,10 @@ class Token
     }
   }
 
-
-/*
-
-  public static function generate(string $client_id, $user = [], $lifetime = false): array
-  {
-
- 
-    self::buildClient($client_id, $user);
-
-    $exp = $lifetime ? 1893456000 : (new DateTime("now +" . Context::$parameters['token']['expire_time']))->getTimeStamp();
-    $jti = defined('_OAUTH_TOKEN_JTI_') ? _OAUTH_TOKEN_JTI_ : bin2hex(openssl_random_pseudo_bytes(20));
-
-    $payload = self::createPayload($user, $exp, $jti);
-
-    $access_token = JWT::encode($payload, self::$client_secret, Context::$parameters['token']['algorithm'], self::$kid);
-
-    $response = [
-      "jti" => $jti,
-      "access_token" => $access_token,
-      "token_type" => "Bearer",
-      "expires_in" => $exp - time(),
-      "refresh_token" => Key::generate(),
-      "scope" => $payload["scope"],
-      "role" => $payload["role"]
-    ];
-
-    if (!empty($user['id'])) {
-      $data = [
-        'client_id' => self::$client_id,
-        'access_token' => $access_token,
-        "refresh_token" => $response["refresh_token"],
-        'id_users' => $user['id'],
-        'ip' => Browser::IP(),
-        'role' => self::$role,
-        'scope' => $payload["scope"],
-        'ua' => $_SERVER['HTTP_USER_AGENT'],
-        'issuer' => self::$issuer,
-      ];
-
-      if (defined('_OAUTH_TOKEN_JTI_')) {
-        Db::updateArray('oauth_tokens', $data, 'jti', _OAUTH_TOKEN_JTI_);
-      } else {
-        $data['jti'] = $payload["jti"];
-        Db::insert('oauth_tokens', $data);
-      }
-    }
-
-    return $response;
-  }
-
-  public static function refresh(string $client_id, string $refresh_token): array
-  {
-    self::buildClient($client_id);
-
-    if (!$refresh = self::getByRefresh($refresh_token)) {
-      throw new InvalidArgumentException('refresh_token_not_found');
-    }
-
-    if (!empty($refresh['id_users']) && !$user = User::checkCredentials($refresh['id_users'], 'id', '', false)) {
-      throw new InvalidArgumentException('access_denied');
-    }
-
-    $exp = (new DateTime("now +" . config('token', 'expire_time')))->getTimeStamp();
-    $payload = self::createPayload($user, $exp, $refresh["jti"]);
-    $access_token = JWT::encode($payload, self::$client_secret, config('token', 'algorithm'), self::$kid);
-
-    $response = [
-      "access_token" => $access_token,
-      "token_type" => "Bearer",
-      "expires_in" => $exp - time(),
-      "refresh_token" => $refresh_token,
-      "scope" => $payload["scope"]
-    ];
-
-    Db::query("UPDATE oauth_tokens SET access_token = " . encode($access_token) . " WHERE jti = " . encode($refresh["jti"]));
-
-    return $response;
-  }
-
-  public static function isValid(string $token, string $client_id, $jwtCheck = false): array|bool
-  {
-    if ($jwtCheck) {
-      try {
-        Jwt::decode($token, self::$client_secret, config('token', 'algorithm'));
-      } catch (Throwable $e) {
-        return false;
-      }
-    }
-
-    return Db::getRow("SELECT jti FROM oauth_tokens WHERE access_token = " . encode($token) . " AND client_id = " . encode($client_id));
-  }
-
   public static function revoke(string $token, string $client_id): array|bool
   {
     return Db::query("DELETE FROM oauth_tokens WHERE access_token = " . encode($token) . " AND client_id = " . encode($client_id));
   }
 
-  */
 }
 ?>
