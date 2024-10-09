@@ -29,7 +29,7 @@ if (!function_exists('config')) {
 if (!function_exists('client')) {
 
   function client(string $value): mixed {
-    return !empty(Context::$token->client) ? Context::$token->client[$value] : false;
+    return !empty(Context::$token->client) && !empty(Context::$token->client[$value]) ? Context::$token->client[$value] : false;
   }
 }
 

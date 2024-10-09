@@ -80,7 +80,7 @@ class Tracking extends Decorator
    */
   public static function getCurrent(): array
   {
-    if (!config('tracking', 'internal') || defined('_BOT_DETECTED_') || PHP_SAPI == 'cli' || !defined('_OAUTH_TOKEN_JTI_')) {
+    if (!config('tracking', 'internal')) {
       return self::$current;
     }
 

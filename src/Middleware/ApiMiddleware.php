@@ -54,7 +54,6 @@ class ApiMiddleware implements MiddlewareInterface
     public function process(Request $request, RequestHandler $handler): Response
     {
 
-   
         //Build locale header
         define('_APP_LOCALE_',Locale::build($request->getHeaderLine("X-Locale")));
 
@@ -69,7 +68,6 @@ class ApiMiddleware implements MiddlewareInterface
 
         //Assegno valori richiesta alla app cosi sono sempre accessibili nell'interfaccia controller senza che venga estesa da questa classe
         $this->container->set('requestData', $this->data);
-
 
         try {
      
@@ -88,7 +86,6 @@ class ApiMiddleware implements MiddlewareInterface
         $response = $this->buildHeader()->withStatus($status);
 
         $response->getBody()->write($content);
-
 
         //TODO: mettere su db origin conosciute
         if(dev() && (!$request->getHeaderLine("Access-Control-Allow-Origin") || $request->getHeaderLine("Access-Control-Allow-Origin") !== '*')) {
@@ -199,9 +196,9 @@ class ApiMiddleware implements MiddlewareInterface
         
         //Pretty print only on dev
         if(!dev()) {
-            $response->getBody()->write(json_encode($message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)); 
+            $response->getBody()->write(json_encode($message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK)); 
         } else {
-            $response->getBody()->write(json_encode($message, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+            $response->getBody()->write(json_encode($message, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK));
         }
         
 
