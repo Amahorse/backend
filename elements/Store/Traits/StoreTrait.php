@@ -56,6 +56,7 @@ trait StoreTrait {
     'variant',
     'status',
     'collection',
+    'collection_current',
     'season',
     'color_primary',
     'color_secondary',
@@ -85,6 +86,68 @@ trait StoreTrait {
   ];
 
   public function split(array $store):array {
+
+    $data = [];
+
+    foreach($store as $value) {
+
+      $value = array_merge($value,Price::calculate($value));
+
+
+      if(!isset($data[$value['code']])) {
+
+        $data[$value['code']] = array_intersect_key($value, array_flip($this->visibleProduct));
+
+        $data[$value['code']]['splits'] = [];
+
+        $data[$value['code']]['categories'] = [];
+
+      }
+
+      if(!empty($value['split'])) {
+        $varSplit = $value[$value['split'] . '_code'];
+      } else {
+        $varSplit = 'none';
+      }
+
+      //Variabile split settata
+      if(!isset($data[$value['code']]['splits'][$varSplit])) {
+        $data[$value['code']]['splits'][$varSplit] = [
+          "variants" => [],
+          "collection" => $value['collection'],
+          "cover" => $value['cover'],
+          "cover_url" => $value['cover_url'],
+          "discount_percentage" => $value['discount_percentage'],
+        ];
+      }
+
+      $data[$value['code']]['splits'][$varSplit]["variants"][$value['sku']] = array_intersect_key($value, array_flip($this->visibleVariant));
+      
+      //Controllo percentuale massima di sconto
+      if($value['discount_percentage'] > $data[$value['code']]['splits'][$varSplit]) {
+        $data[$value['code']]['splits'][$varSplit]["discount_percentage"] = $value['discount_percentage'];
+      }
+
+      if(!empty($value['id_categories'])) {
+        $data[$value['code']]['categories'][(int)$value['id_categories']] = ['id_categories' => $value['id_categories'], 'category' => $value['category']];
+      }
+        
+    }
+
+    $values = array_values($data);
+
+    foreach($values as $key => $value) {
+      $values[$key]['categories'] = array_values($value['categories']);
+      //$values[$key]['variants'] = array_values($value['variants']);
+    }
+
+
+
+    return $values;
+
+  }
+
+  public function explain(array $store):array {
 
     $data = [];
 

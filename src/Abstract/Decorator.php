@@ -22,25 +22,9 @@ abstract class Decorator {
    */
   public static $instances = [];
 
-  /**
-   * Questo serve ad avere a disposizione e chiamare i metodi in modo statico da una classe che li estende esempoio
-   * 
-   * $model = new UsersModel;
-   * 
-   * $model->list()
-   * 
-   * se la classe Users estende il modellp è uguale a
-   * 
-   * Users::list()
-   *
-   * @param [type] $method
-   * @param [type] $args
-   * @return void
-   */
+
   public static function __callStatic($method, $args)
   {
-
-
 
     if(!$model = self::findModel(get_called_class())) {
       throw new Error('Decorator must extends a class with a valid associated model');
