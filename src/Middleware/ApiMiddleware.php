@@ -196,9 +196,9 @@ class ApiMiddleware implements MiddlewareInterface
         
         //Pretty print only on dev
         if(!dev()) {
-            $response->getBody()->write(json_encode($message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK)); 
+            $response->getBody()->write(json_encode($message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)); 
         } else {
-            $response->getBody()->write(json_encode($message, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK));
+            $response->getBody()->write(json_encode($message, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
         }
         
 

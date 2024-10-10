@@ -18,7 +18,6 @@ class Price extends PriceCore  {
         //Valore sconto, può essere ambiguo, su prezzo b2c è su price_to_pay mentre su b2b è su price_taxes_excluded
         "price_discount" =>  0.00,
         //Il prezzo da pagare è sempre comprensivo di tasse
-        "price_to_pay" => 0.00,
         "discount_percentage" => 0.00,
         "discount_offer_percentage" => 0.00,  //Sconto globale su sito
         "discount_product_percentage" => 0.00, //Sconto su prodotto
@@ -31,7 +30,6 @@ class Price extends PriceCore  {
         "total_to_pay" => 0.00
     );
         
-
 
     /**
      * Funzione finale che inizia i calcoli, ritorna un merge tra i totali e i vars

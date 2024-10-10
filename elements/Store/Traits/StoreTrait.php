@@ -44,7 +44,10 @@ trait StoreTrait {
     'size_fit',
     'tech_spech',
     'composition',
-    'info_care'
+    'info_care',
+    'price_min',
+    'price_max',
+    'availability_total'
   ];
 
   /**
@@ -73,7 +76,6 @@ trait StoreTrait {
     'cover_url',
     'price',  
     'price_discount',
-    'price_to_pay',
     'total_price',
     'total_discount',
     'discount_percentage',  
@@ -91,12 +93,18 @@ trait StoreTrait {
 
     foreach($store as $value) {
 
+      //Calcolo prezzo riga
       $value = array_merge($value,Price::calculate($value));
-
 
       if(!isset($data[$value['code']])) {
 
         $data[$value['code']] = array_intersect_key($value, array_flip($this->visibleProduct));
+
+        $data[$value['code']]['price_min'] = $value['total_to_pay'];
+
+        $data[$value['code']]['price_max'] = $value['total_to_pay'];
+
+        $data[$value['code']]['availability_total'] = 0;
 
         $data[$value['code']]['splits'] = [];
 
@@ -106,24 +114,37 @@ trait StoreTrait {
 
       if(!empty($value['split'])) {
         $varSplit = $value[$value['split'] . '_code'];
+        $varOrder = $value[$value['split'] . '_order'];
       } else {
         $varSplit = 'none';
+        $varOrder = 0;
       }
 
       //Variabile split settata
       if(!isset($data[$value['code']]['splits'][$varSplit])) {
         $data[$value['code']]['splits'][$varSplit] = [
-          "variants" => [],
+          "code" => $varSplit,
+          "order" => (int)$varOrder,
           "collection" => $value['collection'],
           "cover" => $value['cover'],
           "cover_url" => $value['cover_url'],
           "discount_percentage" => $value['discount_percentage'],
+          "variants" => []
         ];
       }
 
       $data[$value['code']]['splits'][$varSplit]["variants"][$value['sku']] = array_intersect_key($value, array_flip($this->visibleVariant));
-      
-      //Controllo percentuale massima di sconto
+
+      //Controllo prezzo minimo e massimo per codice padre 
+      if((float)$value['total_to_pay'] < (float)$data[$value['code']]['price_min']) {
+        $data[$value['code']]['price_min'] = (float)$value['total_to_pay'];
+      }
+
+      if((float)$value['total_to_pay'] > (float)$data[$value['code']]['price_max']) {
+        $data[$value['code']]['price_max'] = (float)$value['total_to_pay'];
+      }
+
+      //Controllo percentuale massima di sconto per variante
       if($value['discount_percentage'] > $data[$value['code']]['splits'][$varSplit]) {
         $data[$value['code']]['splits'][$varSplit]["discount_percentage"] = $value['discount_percentage'];
       }
@@ -131,14 +152,41 @@ trait StoreTrait {
       if(!empty($value['id_categories'])) {
         $data[$value['code']]['categories'][(int)$value['id_categories']] = ['id_categories' => $value['id_categories'], 'category' => $value['category']];
       }
+
+      //Aggiungo disponibilità totale 
+      $data[$value['code']]['availability_total'] += $value['availability'];
         
     }
 
     $values = array_values($data);
 
     foreach($values as $key => $value) {
+
       $values[$key]['categories'] = array_values($value['categories']);
-      //$values[$key]['variants'] = array_values($value['variants']);
+      
+      usort($values[$key]['splits'], function($a, $b) {
+        return $a['order'] <=> $b['order'];
+      });
+
+      foreach($values[$key]['splits'] as $keySplit => $valueSplit) {
+
+        // Ordina l'array per a1_order se la variabile $value['split'] è uguale a a0 e viceversa
+        usort($values[$key]['splits'][$keySplit]['variants'], function($a, $b) use ($value) {
+            if ($value['split'] === 'a0') {
+              return $a['a1_order'] <=> $b['a1_order'];
+            } else {
+              return $a['a0_order'] <=> $b['a0_order'];
+            }
+        });
+
+        // Se la variabile a4_order non è null, il secondo valore ulteriore per ordinamento è sempre a4_order
+        usort($values[$key]['splits'][$keySplit]['variants'], function($a, $b) {
+            return $a['a4_order'] <=> $b['a4_order'];
+        });
+
+      }
+        
+
     }
 
 

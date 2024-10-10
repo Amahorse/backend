@@ -84,6 +84,10 @@ class StoreModel extends Model {
       if(!empty($filters['code'])) {
         $query .= " AND products.code = ".encode($filters['code']);
       }
+
+      if(!empty($filters['family'])) {
+        $query .= " AND products.family = ".encode($filters['family']);
+      }
       
       $query .= $this->applyFilters($filters); 
 
